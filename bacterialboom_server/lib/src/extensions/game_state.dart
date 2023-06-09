@@ -15,7 +15,7 @@ const _maxFood = 500;
 const _splitTime = 10.0;
 
 extension GameStateExtension on GameState {
-  static const fps = 6;
+  static const fps = 10;
   static const tickDuration = Duration(milliseconds: 1000 ~/ fps);
   static const deltaTime = 1 / fps;
 
@@ -127,6 +127,7 @@ extension GameStateExtension on GameState {
     for (var player in players) {
       player.blobs.removeWhere((e) => removeBlobIds.contains(e.blobId));
       if (player.blobs.isEmpty) {
+        print('Player died. Lifetime: ${player.getLifeTime(this)}');
         removePlayerIds.add(player.userId);
       }
     }

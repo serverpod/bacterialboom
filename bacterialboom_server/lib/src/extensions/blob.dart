@@ -8,7 +8,7 @@ import 'package:bacterialboom_server/src/util/offset.dart';
 const defaultBlobRadius = 5.0;
 const minimumBlobRadius = 5.0;
 const minimumBlobArea = minimumBlobRadius * minimumBlobRadius * pi;
-const _shrinkFactor = 0.99;
+const _shrinkFactor = 0.95;
 
 // Larger blobs are slower.
 double _velocityForArea(double area) => 5000 / area;

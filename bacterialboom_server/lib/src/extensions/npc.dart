@@ -19,6 +19,7 @@ extension NpcExtension on Player {
     var npc = Player(
       name: 'NPC',
       userId: _npcId--,
+      spawnedAt: game.time,
       blobs: [
         BlobExtension.create(
           position: Offset(

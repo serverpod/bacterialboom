@@ -4,3 +4,4 @@ fields:
   name: String
   blobs: List<Blob>
   splittedAt: double?
+  spawnedAt: double

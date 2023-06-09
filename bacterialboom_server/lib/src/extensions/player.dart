@@ -12,6 +12,7 @@ extension PlayerExtension on Player {
     var player = Player(
       name: '$userId',
       userId: userId,
+      spawnedAt: game.time,
       blobs: [
         BlobExtension.create(
           position: Offset(
@@ -125,4 +126,6 @@ extension PlayerExtension on Player {
       }
     }
   }
+
+  double getLifeTime(GameState game) => game.time - spawnedAt;
 }
