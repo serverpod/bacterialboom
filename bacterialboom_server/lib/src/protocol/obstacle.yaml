@@ -1,0 +1,4 @@
+class: Obstacle
+fields:
+  obstacleId: int
+  body: Body

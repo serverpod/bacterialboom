@@ -1,0 +1,5 @@
+class: Player
+fields:
+  userId: int
+  name: String
+  blobs: List<Blob>

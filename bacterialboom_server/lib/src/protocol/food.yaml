@@ -1,0 +1,4 @@
+class: Food
+fields:
+  foodId: int
+  body: Body

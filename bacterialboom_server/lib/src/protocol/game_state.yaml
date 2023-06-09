@@ -1,0 +1,6 @@
+class: GameState
+fields:
+  gameId: int
+  board: Board
+  food: List<Food>
+  players: List<Player>

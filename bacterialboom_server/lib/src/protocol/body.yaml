@@ -1,0 +1,5 @@
+class: Body
+fields:
+  x: double
+  y: double
+  radius: double
