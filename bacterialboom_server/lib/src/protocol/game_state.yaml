@@ -4,3 +4,5 @@ fields:
   board: Board
   food: List<Food>
   players: List<Player>
+  time: double
+  deltaTime: double

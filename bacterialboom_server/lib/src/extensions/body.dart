@@ -8,6 +8,11 @@ import 'package:bacterialboom_server/src/util/offset.dart';
 extension BodyExtension on Body {
   Offset get position => Offset(x, y);
 
+  set position(Offset position) {
+    x = position.x;
+    y = position.y;
+  }
+
   double get area => radius * radius * pi;
 
   set area(double area) {

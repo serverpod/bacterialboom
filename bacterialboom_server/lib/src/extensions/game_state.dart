@@ -2,18 +2,22 @@ import 'package:bacterialboom_server/src/extensions/blob.dart';
 import 'package:bacterialboom_server/src/extensions/body.dart';
 import 'package:bacterialboom_server/src/extensions/food.dart';
 import 'package:bacterialboom_server/src/extensions/npc.dart';
+import 'package:bacterialboom_server/src/extensions/player.dart';
 import 'package:bacterialboom_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 
 const _boardWidth = 1024.0;
 const _boardHeight = 1024.0;
 
-const _maxPlayers = 20;
-const _maxFood = 100;
+const _maxPlayers = 40;
+const _maxFood = 500;
+
+const _splitTime = 10.0;
 
 extension GameStateExtension on GameState {
-  static const fps = 30;
-  static const tickTime = Duration(milliseconds: 1000 ~/ fps);
+  static const fps = 6;
+  static const tickDuration = Duration(milliseconds: 1000 ~/ fps);
+  static const deltaTime = 1 / fps;
 
   static final List<GameState> _runningGames = [];
   static int _gameId = 0;
@@ -32,6 +36,8 @@ extension GameStateExtension on GameState {
       gameId: _gameId++,
       food: [],
       players: [],
+      time: 0.0,
+      deltaTime: deltaTime,
     );
 
     newGame._spawnNpcs();
@@ -39,6 +45,10 @@ extension GameStateExtension on GameState {
 
     _runningGames.add(newGame);
     return newGame;
+  }
+
+  void addPlayer(Player player) {
+    players.add(player);
   }
 
   void removePlayer(Player player) {
@@ -129,6 +139,21 @@ extension GameStateExtension on GameState {
 
     // Spawn new npcs.
     _spawnNpcs();
+
+    // Shrink blobs.
+    for (var player in players) {
+      player.shrinkBlobs();
+    }
+
+    // Join blobs.
+    for (var player in players) {
+      if (player.splittedAt != null && player.splittedAt! + _splitTime < time) {
+        player.joinBlobs(this);
+      }
+    }
+
+    // Update time.
+    time += deltaTime;
   }
 
   void _spawnFood() {

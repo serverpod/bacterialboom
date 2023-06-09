@@ -15,6 +15,8 @@ class GameState extends _i1.SerializableEntity {
     required this.board,
     required this.food,
     required this.players,
+    required this.time,
+    required this.deltaTime,
   });
 
   factory GameState.fromJson(
@@ -30,6 +32,9 @@ class GameState extends _i1.SerializableEntity {
           .deserialize<List<_i2.Food>>(jsonSerialization['food']),
       players: serializationManager
           .deserialize<List<_i2.Player>>(jsonSerialization['players']),
+      time: serializationManager.deserialize<double>(jsonSerialization['time']),
+      deltaTime: serializationManager
+          .deserialize<double>(jsonSerialization['deltaTime']),
     );
   }
 
@@ -41,6 +46,10 @@ class GameState extends _i1.SerializableEntity {
 
   List<_i2.Player> players;
 
+  double time;
+
+  double deltaTime;
+
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -48,6 +57,8 @@ class GameState extends _i1.SerializableEntity {
       'board': board,
       'food': food,
       'players': players,
+      'time': time,
+      'deltaTime': deltaTime,
     };
   }
 
@@ -58,6 +69,8 @@ class GameState extends _i1.SerializableEntity {
       'board': board,
       'food': food,
       'players': players,
+      'time': time,
+      'deltaTime': deltaTime,
     };
   }
 }

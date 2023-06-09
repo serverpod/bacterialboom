@@ -8,7 +8,7 @@ import 'package:serverpod/serverpod.dart';
 class GameBoardEndpoint extends Endpoint {
   GameBoardEndpoint() {
     // Tick the game state every 100ms.
-    Timer.periodic(GameStateExtension.tickTime, (timer) {
+    Timer.periodic(GameStateExtension.tickDuration, (timer) {
       GameStateExtension.tickAll();
     });
   }
@@ -31,6 +31,7 @@ class GameBoardEndpoint extends Endpoint {
       userId,
       game,
     );
+    game.addPlayer(player);
 
     // Associate the user with a game.
     var userObject = _UserObject(

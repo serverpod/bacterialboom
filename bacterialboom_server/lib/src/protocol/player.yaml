@@ -3,3 +3,4 @@ fields:
   userId: int
   name: String
   blobs: List<Blob>
+  splittedAt: double?

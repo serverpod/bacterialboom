@@ -2,12 +2,14 @@ import 'dart:math';
 
 import 'package:bacterialboom_server/src/extensions/blob.dart';
 import 'package:bacterialboom_server/src/extensions/body.dart';
+import 'package:bacterialboom_server/src/extensions/game_state.dart';
 import 'package:bacterialboom_server/src/extensions/player.dart';
 import 'package:bacterialboom_server/src/generated/protocol.dart';
 import 'package:bacterialboom_server/src/util/distance.dart';
 import 'package:bacterialboom_server/src/util/offset.dart';
 
 const _chaseBlobDistance = 100.0;
+const _splitProbability = 0.1;
 
 extension NpcExtension on Player {
   static int _npcId = -1;
@@ -23,7 +25,7 @@ extension NpcExtension on Player {
             random.nextDouble() * game.board.width,
             random.nextDouble() * game.board.height,
           ),
-          radius: random.nextDouble() * 10 + 5,
+          radius: defaultBlobRadius,
         ),
       ],
     );
@@ -85,6 +87,16 @@ extension NpcExtension on Player {
         }
       }
     }
+
+    var random = Random();
+
+    if (canSplit &&
+        random.nextDouble() <
+            _splitProbability * GameStateExtension.deltaTime) {
+      splitBlobs(game);
+    }
+
+    avoidOverlappingBlobs();
   }
 
   Blob? _findClosestOpponentBlob({
