@@ -12,7 +12,7 @@ const _boardHeight = 1024.0;
 const _maxPlayers = 40;
 const _maxFood = 500;
 
-const _splitTime = 10.0;
+const _splitTime = 5.0;
 
 extension GameStateExtension on GameState {
   static const fps = 10;
