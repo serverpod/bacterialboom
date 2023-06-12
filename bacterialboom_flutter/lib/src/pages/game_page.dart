@@ -25,11 +25,11 @@ class _GamePageState extends State<GamePage> {
     _connectionHandler = StreamingConnectionHandler(
       client: client,
       listener: (connectionState) {
-        if (connectionState.status == StreamingConnectionStatus.disconnected) {
-          setState(() {
+        setState(() {
+          if (connectionState.status != StreamingConnectionStatus.connected) {
             _gameState = null;
-          });
-        }
+          }
+        });
       },
     );
     _connectionHandler.connect();
