@@ -17,7 +17,6 @@ class GameControlsWidget extends StatefulWidget {
 
 class GameControlsWidgetState extends State<GameControlsWidget> {
   late final GameControls _gameControls = GameControls();
-  final _focusNode = FocusNode();
 
   @override
   void initState() {

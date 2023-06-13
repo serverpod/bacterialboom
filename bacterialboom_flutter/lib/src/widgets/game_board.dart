@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bacterialboom_client/bacterialboom_client.dart';
 import 'package:bacterialboom_flutter/main.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/game_board.dart';
@@ -9,11 +11,13 @@ class GameBoardWidget extends StatefulWidget {
   const GameBoardWidget({
     required this.gameState,
     required this.inputController,
+    required this.onDone,
     Key? key,
   }) : super(key: key);
 
   final GameState gameState;
   final GameInputController inputController;
+  final VoidCallback onDone;
 
   @override
   GameBoardWidgetState createState() => GameBoardWidgetState();
@@ -26,6 +30,8 @@ class GameBoardWidgetState extends State<GameBoardWidget> {
     userId: userId,
   );
   late final int userId;
+
+  bool _isDoneSent = false;
 
   @override
   void initState() {
@@ -45,5 +51,13 @@ class GameBoardWidgetState extends State<GameBoardWidget> {
   void didUpdateWidget(covariant GameBoardWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     _gameBoard.updateGameState(widget.gameState);
+    if (!_gameBoard.isAlive && !_isDoneSent) {
+      _isDoneSent = true;
+      Timer(const Duration(seconds: 2), () {
+        if (mounted) {
+          widget.onDone();
+        }
+      });
+    }
   }
 }

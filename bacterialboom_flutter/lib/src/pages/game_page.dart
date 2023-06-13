@@ -6,7 +6,12 @@ import 'package:bacterialboom_flutter/src/widgets/game_controls.dart';
 import 'package:flutter/material.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({super.key});
+  const GamePage({
+    super.key,
+    required this.onDone,
+  });
+
+  final VoidCallback onDone;
 
   @override
   State<GamePage> createState() => _GamePageState();
@@ -27,6 +32,9 @@ class _GamePageState extends State<GamePage> {
     _connectionHandler = StreamingConnectionHandler(
       client: client,
       listener: (connectionState) {
+        if (!mounted) {
+          return;
+        }
         setState(() {
           if (connectionState.status != StreamingConnectionStatus.connected) {
             _gameState = null;
@@ -57,7 +65,7 @@ class _GamePageState extends State<GamePage> {
   void dispose() {
     super.dispose();
     _connectionHandler.dispose();
-    client.gameBoard.resetStream();
+    _gameState = null;
   }
 
   @override
@@ -76,6 +84,10 @@ class _GamePageState extends State<GamePage> {
                 GameBoardWidget(
                   gameState: _gameState!,
                   inputController: _gameInputController,
+                  onDone: () {
+                    widget.onDone();
+                    _connectionHandler.close();
+                  },
                 ),
                 GameControlsWidget(
                   controller: _gameInputController,

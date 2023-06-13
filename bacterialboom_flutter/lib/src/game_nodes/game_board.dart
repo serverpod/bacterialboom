@@ -29,7 +29,7 @@ class GameBoard extends NodeWithSize {
 
   @override
   void update(double dt) {
-    if (_isAlive) {
+    if (isAlive) {
       var input = inputController.joystickValue.cappedNormalized;
 
       var playerBlobs = _blobNodesForUserId(userId);
@@ -45,7 +45,7 @@ class GameBoard extends NodeWithSize {
   DateTime? _lastPlayerPositionSent;
 
   void _onPerformAction() {
-    if (_isAlive) {
+    if (isAlive) {
       client.gameBoard.sendStreamMessage(CmdSplit(split: true));
       _sentCmdSplit = true;
     }
@@ -85,13 +85,13 @@ class GameBoard extends NodeWithSize {
     }
   }
 
-  bool get _isAlive =>
+  bool get isAlive =>
       gameState.players.any((player) => player.userId == userId);
 
   updateGameState(GameState gameState) {
     this.gameState = gameState;
 
-    // Reset all animations.
+    // Reset all move animations.
     motions.stopAll();
 
     // Make a list of all blobs ids in the update.
@@ -133,10 +133,10 @@ class GameBoard extends NodeWithSize {
           // Update blob.
           var blobNode = blobsOnBoard[blob.blobId]!;
           blobNode.maxVelocity = blob.maxVelocity;
-          // blobNode.radius = blob.body.radius;
 
           // Tween radius.
-          motions.run(
+          blobNode.motions.stopAll();
+          blobNode.motions.run(
             MotionTween(
               setter: (double a) => blobNode.radius = a,
               start: blobNode.radius,
@@ -152,7 +152,7 @@ class GameBoard extends NodeWithSize {
             // position immediately.
             blobNode.position = Offset(blob.body.x, blob.body.y);
           } else if (!isCurrentPlayer) {
-            // Interpolate to new position.
+            // Animate to new position.
             motions.run(
               MotionTween(
                 setter: (Offset a) => blobNode.position = a,

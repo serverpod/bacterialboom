@@ -1,8 +1,8 @@
 import 'package:bacterialboom_client/bacterialboom_client.dart';
 import 'package:bacterialboom_flutter/src/pages/game_page.dart';
 import 'package:bacterialboom_flutter/src/pages/sign_in_page.dart';
+import 'package:bacterialboom_flutter/src/pages/splash_page.dart';
 import 'package:flutter/material.dart';
-import 'package:made_with_serverpod/made_with_serverpod.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
@@ -52,6 +52,8 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
+  bool _playing = false;
+
   @override
   void initState() {
     super.initState();
@@ -63,21 +65,32 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget page;
+    if (sessionManager.isSignedIn) {
+      if (_playing) {
+        page = GamePage(
+          onDone: () {
+            setState(() {
+              _playing = false;
+            });
+          },
+        );
+      } else {
+        page = SplashPage(
+          onPressedPlay: () {
+            setState(() {
+              _playing = true;
+            });
+          },
+        );
+      }
+    } else {
+      page = const SignInPage();
+    }
+
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(widget.title),
-      //   actions: sessionManager.isSignedIn
-      //       ? [
-      //           IconButton(
-      //             icon: Icon(Icons.logout),
-      //             onPressed: sessionManager.signOut,
-      //           )
-      //         ]
-      //       : const [],
-      // ),
       body: SafeArea(
-        child:
-            sessionManager.isSignedIn ? const GamePage() : const SignInPage(),
+        child: page,
       ),
     );
   }
