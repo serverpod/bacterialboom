@@ -35,6 +35,7 @@ class GameBoard extends NodeWithSize {
       var playerBlobs = _blobNodesForUserId(userId);
       for (var blob in playerBlobs) {
         blob.position += input * dt * blob.maxVelocity;
+        blob.constrainPosition();
       }
       _avoidOverlappingBlobNodes(playerBlobs);
 

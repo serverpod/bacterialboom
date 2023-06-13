@@ -25,4 +25,22 @@ class BlobNode extends Node {
       Paint()..color = color,
     );
   }
+
+  void constrainPosition() {
+    if (parent == null) {
+      return;
+    }
+    var world = parent as NodeWithSize;
+
+    if (position.dx < radius) {
+      position = Offset(radius, position.dy);
+    } else if (position.dx > world.size.width - radius) {
+      position = Offset(world.size.width - radius, position.dy);
+    }
+    if (position.dy < radius) {
+      position = Offset(position.dx, radius);
+    } else if (position.dy > world.size.height - radius) {
+      position = Offset(position.dx, world.size.height - radius);
+    }
+  }
 }
