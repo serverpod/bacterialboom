@@ -13,14 +13,18 @@ import 'package:serverpod_auth_server/module.dart' as _i3;
 import 'blob.dart' as _i4;
 import 'board.dart' as _i5;
 import 'body.dart' as _i6;
-import 'food.dart' as _i7;
-import 'game_state.dart' as _i8;
-import 'obstacle.dart' as _i9;
-import 'player.dart' as _i10;
-import 'protocol.dart' as _i11;
+import 'cmd_position_update.dart' as _i7;
+import 'cmd_split.dart' as _i8;
+import 'food.dart' as _i9;
+import 'game_state.dart' as _i10;
+import 'obstacle.dart' as _i11;
+import 'player.dart' as _i12;
+import 'protocol.dart' as _i13;
 export 'blob.dart';
 export 'board.dart';
 export 'body.dart';
+export 'cmd_position_update.dart';
+export 'cmd_split.dart';
 export 'food.dart';
 export 'game_state.dart';
 export 'obstacle.dart';
@@ -58,17 +62,23 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i6.Body) {
       return _i6.Body.fromJson(data, this) as T;
     }
-    if (t == _i7.Food) {
-      return _i7.Food.fromJson(data, this) as T;
+    if (t == _i7.CmdPositionUpdate) {
+      return _i7.CmdPositionUpdate.fromJson(data, this) as T;
     }
-    if (t == _i8.GameState) {
-      return _i8.GameState.fromJson(data, this) as T;
+    if (t == _i8.CmdSplit) {
+      return _i8.CmdSplit.fromJson(data, this) as T;
     }
-    if (t == _i9.Obstacle) {
-      return _i9.Obstacle.fromJson(data, this) as T;
+    if (t == _i9.Food) {
+      return _i9.Food.fromJson(data, this) as T;
     }
-    if (t == _i10.Player) {
-      return _i10.Player.fromJson(data, this) as T;
+    if (t == _i10.GameState) {
+      return _i10.GameState.fromJson(data, this) as T;
+    }
+    if (t == _i11.Obstacle) {
+      return _i11.Obstacle.fromJson(data, this) as T;
+    }
+    if (t == _i12.Player) {
+      return _i12.Player.fromJson(data, this) as T;
     }
     if (t == _i1.getType<_i4.Blob?>()) {
       return (data != null ? _i4.Blob.fromJson(data, this) : null) as T;
@@ -79,28 +89,35 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i6.Body?>()) {
       return (data != null ? _i6.Body.fromJson(data, this) : null) as T;
     }
-    if (t == _i1.getType<_i7.Food?>()) {
-      return (data != null ? _i7.Food.fromJson(data, this) : null) as T;
+    if (t == _i1.getType<_i7.CmdPositionUpdate?>()) {
+      return (data != null ? _i7.CmdPositionUpdate.fromJson(data, this) : null)
+          as T;
     }
-    if (t == _i1.getType<_i8.GameState?>()) {
-      return (data != null ? _i8.GameState.fromJson(data, this) : null) as T;
+    if (t == _i1.getType<_i8.CmdSplit?>()) {
+      return (data != null ? _i8.CmdSplit.fromJson(data, this) : null) as T;
     }
-    if (t == _i1.getType<_i9.Obstacle?>()) {
-      return (data != null ? _i9.Obstacle.fromJson(data, this) : null) as T;
+    if (t == _i1.getType<_i9.Food?>()) {
+      return (data != null ? _i9.Food.fromJson(data, this) : null) as T;
     }
-    if (t == _i1.getType<_i10.Player?>()) {
-      return (data != null ? _i10.Player.fromJson(data, this) : null) as T;
+    if (t == _i1.getType<_i10.GameState?>()) {
+      return (data != null ? _i10.GameState.fromJson(data, this) : null) as T;
     }
-    if (t == List<_i11.Food>) {
-      return (data as List).map((e) => deserialize<_i11.Food>(e)).toList()
+    if (t == _i1.getType<_i11.Obstacle?>()) {
+      return (data != null ? _i11.Obstacle.fromJson(data, this) : null) as T;
+    }
+    if (t == _i1.getType<_i12.Player?>()) {
+      return (data != null ? _i12.Player.fromJson(data, this) : null) as T;
+    }
+    if (t == List<_i13.Blob>) {
+      return (data as List).map((e) => deserialize<_i13.Blob>(e)).toList()
           as dynamic;
     }
-    if (t == List<_i11.Player>) {
-      return (data as List).map((e) => deserialize<_i11.Player>(e)).toList()
+    if (t == List<_i13.Food>) {
+      return (data as List).map((e) => deserialize<_i13.Food>(e)).toList()
           as dynamic;
     }
-    if (t == List<_i11.Blob>) {
-      return (data as List).map((e) => deserialize<_i11.Blob>(e)).toList()
+    if (t == List<_i13.Player>) {
+      return (data as List).map((e) => deserialize<_i13.Player>(e)).toList()
           as dynamic;
     }
     try {
@@ -128,16 +145,22 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i6.Body) {
       return 'Body';
     }
-    if (data is _i7.Food) {
+    if (data is _i7.CmdPositionUpdate) {
+      return 'CmdPositionUpdate';
+    }
+    if (data is _i8.CmdSplit) {
+      return 'CmdSplit';
+    }
+    if (data is _i9.Food) {
       return 'Food';
     }
-    if (data is _i8.GameState) {
+    if (data is _i10.GameState) {
       return 'GameState';
     }
-    if (data is _i9.Obstacle) {
+    if (data is _i11.Obstacle) {
       return 'Obstacle';
     }
-    if (data is _i10.Player) {
+    if (data is _i12.Player) {
       return 'Player';
     }
     return super.getClassNameForObject(data);
@@ -158,17 +181,23 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data['className'] == 'Body') {
       return deserialize<_i6.Body>(data['data']);
     }
+    if (data['className'] == 'CmdPositionUpdate') {
+      return deserialize<_i7.CmdPositionUpdate>(data['data']);
+    }
+    if (data['className'] == 'CmdSplit') {
+      return deserialize<_i8.CmdSplit>(data['data']);
+    }
     if (data['className'] == 'Food') {
-      return deserialize<_i7.Food>(data['data']);
+      return deserialize<_i9.Food>(data['data']);
     }
     if (data['className'] == 'GameState') {
-      return deserialize<_i8.GameState>(data['data']);
+      return deserialize<_i10.GameState>(data['data']);
     }
     if (data['className'] == 'Obstacle') {
-      return deserialize<_i9.Obstacle>(data['data']);
+      return deserialize<_i11.Obstacle>(data['data']);
     }
     if (data['className'] == 'Player') {
-      return deserialize<_i10.Player>(data['data']);
+      return deserialize<_i12.Player>(data['data']);
     }
     return super.deserializeByClassName(data);
   }

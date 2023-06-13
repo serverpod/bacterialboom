@@ -1,0 +1,3 @@
+class: CmdPositionUpdate
+fields:
+  blobs: List<Blob>

@@ -1,7 +1,8 @@
 import 'package:bacterialboom_client/bacterialboom_client.dart';
 import 'package:bacterialboom_flutter/main.dart';
-import 'package:bacterialboom_flutter/src/game_board.dart';
+import 'package:bacterialboom_flutter/src/widgets/game_board.dart';
 import 'package:bacterialboom_flutter/src/widgets/connection_display.dart';
+import 'package:bacterialboom_flutter/src/widgets/game_controls.dart';
 import 'package:flutter/material.dart';
 
 class GamePage extends StatefulWidget {
@@ -13,6 +14,7 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   GameState? _gameState;
+  final _gameInputController = GameInputController();
 
   late final StreamingConnectionHandler _connectionHandler;
 
@@ -66,7 +68,20 @@ class _GamePageState extends State<GamePage> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : GameBoardWidget(gameState: _gameState!),
+          : Stack(
+              children: [
+                Container(
+                  color: Colors.grey[800],
+                ),
+                GameBoardWidget(
+                  gameState: _gameState!,
+                  inputController: _gameInputController,
+                ),
+                GameControlsWidget(
+                  controller: _gameInputController,
+                ),
+              ],
+            ),
     );
   }
 }

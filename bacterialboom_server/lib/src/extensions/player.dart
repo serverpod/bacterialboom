@@ -62,6 +62,9 @@ extension PlayerExtension on Player {
   }
 
   void splitBlobs(GameState game) {
+    if (userId >= 0) {
+      print('Splitting blobs for $name');
+    }
     var newBlobs = <Blob>[];
     for (var blob in blobs) {
       if (blob.canSplit) {
@@ -85,9 +88,16 @@ extension PlayerExtension on Player {
     }
     blobs.addAll(newBlobs);
     splittedAt = game.time;
+
+    if (userId >= 0) {
+      print(' - ${blobs.length} blobs');
+    }
   }
 
   void joinBlobs(GameState game) {
+    if (userId >= 0) {
+      print('Joining blobs for $name');
+    }
     splittedAt = null;
     if (blobs.length <= 1) return;
 
@@ -102,6 +112,10 @@ extension PlayerExtension on Player {
     joinedBlob.area = totalArea;
     joinedBlob.body.position = joinedBlobPosition;
     blobs.removeWhere((e) => e != joinedBlob);
+
+    if (userId >= 0) {
+      print(' - ${blobs.length} blobs');
+    }
   }
 
   void avoidOverlappingBlobs() {

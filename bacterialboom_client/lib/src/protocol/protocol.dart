@@ -11,15 +11,19 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'blob.dart' as _i2;
 import 'board.dart' as _i3;
 import 'body.dart' as _i4;
-import 'food.dart' as _i5;
-import 'game_state.dart' as _i6;
-import 'obstacle.dart' as _i7;
-import 'player.dart' as _i8;
-import 'protocol.dart' as _i9;
-import 'package:serverpod_auth_client/module.dart' as _i10;
+import 'cmd_position_update.dart' as _i5;
+import 'cmd_split.dart' as _i6;
+import 'food.dart' as _i7;
+import 'game_state.dart' as _i8;
+import 'obstacle.dart' as _i9;
+import 'player.dart' as _i10;
+import 'protocol.dart' as _i11;
+import 'package:serverpod_auth_client/module.dart' as _i12;
 export 'blob.dart';
 export 'board.dart';
 export 'body.dart';
+export 'cmd_position_update.dart';
+export 'cmd_split.dart';
 export 'food.dart';
 export 'game_state.dart';
 export 'obstacle.dart';
@@ -53,17 +57,23 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i4.Body) {
       return _i4.Body.fromJson(data, this) as T;
     }
-    if (t == _i5.Food) {
-      return _i5.Food.fromJson(data, this) as T;
+    if (t == _i5.CmdPositionUpdate) {
+      return _i5.CmdPositionUpdate.fromJson(data, this) as T;
     }
-    if (t == _i6.GameState) {
-      return _i6.GameState.fromJson(data, this) as T;
+    if (t == _i6.CmdSplit) {
+      return _i6.CmdSplit.fromJson(data, this) as T;
     }
-    if (t == _i7.Obstacle) {
-      return _i7.Obstacle.fromJson(data, this) as T;
+    if (t == _i7.Food) {
+      return _i7.Food.fromJson(data, this) as T;
     }
-    if (t == _i8.Player) {
-      return _i8.Player.fromJson(data, this) as T;
+    if (t == _i8.GameState) {
+      return _i8.GameState.fromJson(data, this) as T;
+    }
+    if (t == _i9.Obstacle) {
+      return _i9.Obstacle.fromJson(data, this) as T;
+    }
+    if (t == _i10.Player) {
+      return _i10.Player.fromJson(data, this) as T;
     }
     if (t == _i1.getType<_i2.Blob?>()) {
       return (data != null ? _i2.Blob.fromJson(data, this) : null) as T;
@@ -74,32 +84,39 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i4.Body?>()) {
       return (data != null ? _i4.Body.fromJson(data, this) : null) as T;
     }
-    if (t == _i1.getType<_i5.Food?>()) {
-      return (data != null ? _i5.Food.fromJson(data, this) : null) as T;
+    if (t == _i1.getType<_i5.CmdPositionUpdate?>()) {
+      return (data != null ? _i5.CmdPositionUpdate.fromJson(data, this) : null)
+          as T;
     }
-    if (t == _i1.getType<_i6.GameState?>()) {
-      return (data != null ? _i6.GameState.fromJson(data, this) : null) as T;
+    if (t == _i1.getType<_i6.CmdSplit?>()) {
+      return (data != null ? _i6.CmdSplit.fromJson(data, this) : null) as T;
     }
-    if (t == _i1.getType<_i7.Obstacle?>()) {
-      return (data != null ? _i7.Obstacle.fromJson(data, this) : null) as T;
+    if (t == _i1.getType<_i7.Food?>()) {
+      return (data != null ? _i7.Food.fromJson(data, this) : null) as T;
     }
-    if (t == _i1.getType<_i8.Player?>()) {
-      return (data != null ? _i8.Player.fromJson(data, this) : null) as T;
+    if (t == _i1.getType<_i8.GameState?>()) {
+      return (data != null ? _i8.GameState.fromJson(data, this) : null) as T;
     }
-    if (t == List<_i9.Food>) {
-      return (data as List).map((e) => deserialize<_i9.Food>(e)).toList()
+    if (t == _i1.getType<_i9.Obstacle?>()) {
+      return (data != null ? _i9.Obstacle.fromJson(data, this) : null) as T;
+    }
+    if (t == _i1.getType<_i10.Player?>()) {
+      return (data != null ? _i10.Player.fromJson(data, this) : null) as T;
+    }
+    if (t == List<_i11.Blob>) {
+      return (data as List).map((e) => deserialize<_i11.Blob>(e)).toList()
           as dynamic;
     }
-    if (t == List<_i9.Player>) {
-      return (data as List).map((e) => deserialize<_i9.Player>(e)).toList()
+    if (t == List<_i11.Food>) {
+      return (data as List).map((e) => deserialize<_i11.Food>(e)).toList()
           as dynamic;
     }
-    if (t == List<_i9.Blob>) {
-      return (data as List).map((e) => deserialize<_i9.Blob>(e)).toList()
+    if (t == List<_i11.Player>) {
+      return (data as List).map((e) => deserialize<_i11.Player>(e)).toList()
           as dynamic;
     }
     try {
-      return _i10.Protocol().deserialize<T>(data, t);
+      return _i12.Protocol().deserialize<T>(data, t);
     } catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -107,7 +124,7 @@ class Protocol extends _i1.SerializationManager {
   @override
   String? getClassNameForObject(Object data) {
     String? className;
-    className = _i10.Protocol().getClassNameForObject(data);
+    className = _i12.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -120,16 +137,22 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i4.Body) {
       return 'Body';
     }
-    if (data is _i5.Food) {
+    if (data is _i5.CmdPositionUpdate) {
+      return 'CmdPositionUpdate';
+    }
+    if (data is _i6.CmdSplit) {
+      return 'CmdSplit';
+    }
+    if (data is _i7.Food) {
       return 'Food';
     }
-    if (data is _i6.GameState) {
+    if (data is _i8.GameState) {
       return 'GameState';
     }
-    if (data is _i7.Obstacle) {
+    if (data is _i9.Obstacle) {
       return 'Obstacle';
     }
-    if (data is _i8.Player) {
+    if (data is _i10.Player) {
       return 'Player';
     }
     return super.getClassNameForObject(data);
@@ -139,7 +162,7 @@ class Protocol extends _i1.SerializationManager {
   dynamic deserializeByClassName(Map<String, dynamic> data) {
     if (data['className'].startsWith('serverpod_auth.')) {
       data['className'] = data['className'].substring(15);
-      return _i10.Protocol().deserializeByClassName(data);
+      return _i12.Protocol().deserializeByClassName(data);
     }
     if (data['className'] == 'Blob') {
       return deserialize<_i2.Blob>(data['data']);
@@ -150,17 +173,23 @@ class Protocol extends _i1.SerializationManager {
     if (data['className'] == 'Body') {
       return deserialize<_i4.Body>(data['data']);
     }
+    if (data['className'] == 'CmdPositionUpdate') {
+      return deserialize<_i5.CmdPositionUpdate>(data['data']);
+    }
+    if (data['className'] == 'CmdSplit') {
+      return deserialize<_i6.CmdSplit>(data['data']);
+    }
     if (data['className'] == 'Food') {
-      return deserialize<_i5.Food>(data['data']);
+      return deserialize<_i7.Food>(data['data']);
     }
     if (data['className'] == 'GameState') {
-      return deserialize<_i6.GameState>(data['data']);
+      return deserialize<_i8.GameState>(data['data']);
     }
     if (data['className'] == 'Obstacle') {
-      return deserialize<_i7.Obstacle>(data['data']);
+      return deserialize<_i9.Obstacle>(data['data']);
     }
     if (data['className'] == 'Player') {
-      return deserialize<_i8.Player>(data['data']);
+      return deserialize<_i10.Player>(data['data']);
     }
     return super.deserializeByClassName(data);
   }

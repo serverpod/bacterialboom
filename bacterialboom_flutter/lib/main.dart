@@ -76,11 +76,8 @@ class MainPageState extends State<MainPage> {
       //       : const [],
       // ),
       body: SafeArea(
-        child: MadeWithServerpod(
-          url: Uri.parse('https://github.com/serverpod/bacterialboom'),
-          child:
-              sessionManager.isSignedIn ? const GamePage() : const SignInPage(),
-        ),
+        child:
+            sessionManager.isSignedIn ? const GamePage() : const SignInPage(),
       ),
     );
   }

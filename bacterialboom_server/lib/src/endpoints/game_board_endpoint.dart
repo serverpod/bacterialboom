@@ -53,6 +53,36 @@ class GameBoardEndpoint extends Endpoint {
   }
 
   @override
+  Future<void> handleStreamMessage(
+    StreamingSession session,
+    SerializableEntity message,
+  ) async {
+    if (message is CmdPositionUpdate) {
+      var userObject = getUserObject(session) as _UserObject;
+      var player = userObject.player;
+
+      if (player.blobs.length != message.blobs.length) {
+        print(' - Invalid number of blobs');
+        return;
+      }
+
+      // TODO: Validate position update.
+
+      player.blobs = message.blobs;
+    } else if (message is CmdSplit) {
+      print('CMD Split');
+      var userObject = getUserObject(session) as _UserObject;
+      var player = userObject.player;
+      if (player.canSplit) {
+        player.splitBlobs(userObject.game);
+        sendStreamMessage(session, player);
+      } else {
+        print(' - Cannot split');
+      }
+    }
+  }
+
+  @override
   Future<void> streamClosed(StreamingSession session) async {
     // Remove the user from the game.
     var userObject = getUserObject(session) as _UserObject;
