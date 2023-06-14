@@ -9,35 +9,44 @@ const _dampening = 0.95;
 class GameViewNode extends NodeWithSize {
   GameViewNode(this.gameBoard) : super(const Size(1024, 1024)) {
     addChild(gameBoard);
+    update(0);
   }
 
   final GameBoard gameBoard;
   Offset? _targetOffset;
+  double? _targetScale;
 
   @override
   void update(double dt) {
-    print('board size: ${gameBoard.size}, view size: $size');
     var playerBounds = gameBoard.playerBounds;
     var focus = playerBounds.center;
 
     var longestViewSide = math.max(size.width, size.height);
     var longestPlayerSide = math.max(playerBounds.width, playerBounds.height);
 
+    var minScale = longestViewSide / 25 / 20;
     var targetScale = longestViewSide / longestPlayerSide / 20;
+    if (targetScale < minScale) {
+      targetScale = minScale;
+    }
 
     var viewCenter = Offset(size.width / 2, size.height / 2);
     var targetOffset = viewCenter - focus * targetScale;
 
+    targetOffset = _clampOffsetToView(targetOffset, targetScale);
+
     if (_targetOffset == null) {
       // Initially set the position without dampening.
       _targetOffset = targetOffset;
+      _targetScale = targetScale;
       gameBoard.position = _targetOffset!;
-      gameBoard.scale = targetScale;
+      gameBoard.scale = _targetScale!;
     } else {
       // Dampen the position.
       if (gameBoard.isAlive) {
         // Follow the player as long as it is alive.
         _targetOffset = targetOffset;
+        _targetScale = targetScale;
       }
       var timeAdjustedDampening =
           (1 - math.pow(1 - _dampening, dt * 60)).toDouble();
@@ -46,9 +55,35 @@ class GameViewNode extends NodeWithSize {
           _targetOffset! * (1 - timeAdjustedDampening);
 
       gameBoard.scale = gameBoard.scale * timeAdjustedDampening +
-          targetScale * (1 - timeAdjustedDampening);
+          _targetScale! * (1 - timeAdjustedDampening);
     }
 
-    // Make sure the game board is not outside the view.
+    print('gameBoard offset: ${gameBoard.position} scale: ${gameBoard.scale}');
+  }
+
+  Offset _clampOffsetToView(Offset targetOffset, double scale) {
+    var targetOffsetX = targetOffset.dx;
+    var targetOffsetY = targetOffset.dy;
+
+    if (targetOffsetX > 0) {
+      targetOffsetX = 0;
+    }
+    if (targetOffsetY > 0) {
+      targetOffsetY = 0;
+    }
+
+    var maxOffsetX = size.width - gameBoard.size.width * scale;
+    var maxOffsetY = size.height - gameBoard.size.height * scale;
+
+    if (targetOffsetX < maxOffsetX) {
+      targetOffsetX = maxOffsetX;
+    }
+    if (targetOffsetY < maxOffsetY) {
+      targetOffsetY = maxOffsetY;
+    }
+
+    targetOffset = Offset(targetOffsetX, targetOffsetY);
+
+    return targetOffset;
   }
 }
