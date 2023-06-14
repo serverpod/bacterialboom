@@ -20,7 +20,7 @@ extension NpcExtension on Player {
       name: 'NPC',
       userId: _npcId--,
       spawnedAt: game.time,
-      numEatenFood: 0,
+      score: 0,
       blobs: [
         BlobExtension.create(
           position: Offset(

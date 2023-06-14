@@ -4,6 +4,7 @@ import 'package:bacterialboom_server/src/extensions/game_state.dart';
 import 'package:bacterialboom_server/src/extensions/player.dart';
 import 'package:bacterialboom_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_server/module.dart';
 
 class GameBoardEndpoint extends Endpoint {
   GameBoardEndpoint() {
@@ -22,14 +23,19 @@ class GameBoardEndpoint extends Endpoint {
     if (userId == null) {
       throw Exception('User not authenticated.');
     }
+    var userInfo = await Users.findUserByUserId(session, userId);
+    if (userInfo == null) {
+      throw Exception('User not found.');
+    }
 
     // Find an open game.
     var game = GameStateExtension.findOrCreateGame();
 
     // Create a player for the user.
     Player player = PlayerExtension.create(
-      userId,
-      game,
+      userId: userId,
+      userInfo: userInfo.userName,
+      game: game,
     );
     game.addPlayer(player);
 

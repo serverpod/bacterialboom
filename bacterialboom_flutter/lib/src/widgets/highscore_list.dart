@@ -12,18 +12,18 @@ class HighScoreList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final players = List<Player>.from(gameState.players);
-    players.sort((a, b) => b.numEatenFood.compareTo(a.numEatenFood));
+    players.sort((a, b) => b.score.compareTo(a.score));
 
     final highScores = players
         .take(10)
         .map((player) => HighScore(
               name: player.name,
-              score: player.numEatenFood,
+              score: player.score,
             ))
         .toList();
 
     return SizedBox(
-      width: 100,
+      width: 120,
       child: Column(
         children: highScores,
       ),
@@ -39,7 +39,7 @@ class HighScore extends StatelessWidget {
   }) : super(key: key);
 
   final String name;
-  final int score;
+  final double score;
 
   @override
   Widget build(BuildContext context) {
@@ -50,17 +50,20 @@ class HighScore extends StatelessWidget {
           Expanded(
             child: Text(
               name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 12,
               ),
             ),
           ),
+          const SizedBox(width: 8),
           Text(
-            score.toString(),
+            score.floor().toString(),
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 16,
+              fontSize: 12,
             ),
           ),
         ],

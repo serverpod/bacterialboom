@@ -108,6 +108,7 @@ extension GameStateExtension on GameState {
               if (blob.body.radius > otherBlob.body.radius) {
                 blob.area += otherBlob.area;
                 removeBlobIds.add(otherBlob.blobId);
+                player.score += otherBlob.area / defaultFoodArea;
               }
             }
           }
@@ -118,7 +119,7 @@ extension GameStateExtension on GameState {
               blob.body.collidesWith(food.body)) {
             blob.area += food.body.area;
             removeFoodIds.add(food.foodId);
-            player.numEatenFood += 1;
+            player.score += food.body.area / defaultFoodArea;
           }
         }
       }

@@ -3,6 +3,6 @@ fields:
   userId: int
   name: String
   blobs: List<Blob>
-  numEatenFood: int
+  score: double
   splittedAt: double?
   spawnedAt: double

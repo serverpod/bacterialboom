@@ -7,13 +7,17 @@ import 'package:bacterialboom_server/src/util/distance.dart';
 import 'package:bacterialboom_server/src/util/offset.dart';
 
 extension PlayerExtension on Player {
-  static Player create(int userId, GameState game) {
+  static Player create({
+    required int userId,
+    required String userInfo,
+    required GameState game,
+  }) {
     var random = Random();
     var player = Player(
-      name: '$userId',
+      name: userInfo,
       userId: userId,
       spawnedAt: game.time,
-      numEatenFood: 0,
+      score: 0,
       blobs: [
         BlobExtension.create(
           position: Offset(
@@ -62,9 +66,17 @@ extension PlayerExtension on Player {
     return false;
   }
 
+  double get area {
+    var area = 0.0;
+    for (var blob in blobs) {
+      area += blob.area;
+    }
+    return area;
+  }
+
   void splitBlobs(GameState game) {
     if (userId >= 0) {
-      print('Splitting blobs for $name');
+      print('Splitting blobs for $name, area: $area');
     }
     var newBlobs = <Blob>[];
     for (var blob in blobs) {
@@ -75,47 +87,62 @@ extension PlayerExtension on Player {
         blob.area = splitArea;
         var angle = Random().nextDouble() * 2 * pi;
         var offset = Offset(
-          cos(angle) * splitRadius * 2,
-          sin(angle) * splitRadius * 2,
+          cos(angle) * splitRadius,
+          sin(angle) * splitRadius,
         );
-        blob.body.position = blob.body.position + offset;
 
-        var newBlob = BlobExtension.create(
+        var newBlobA = BlobExtension.create(
           position: blob.body.position - offset,
           radius: splitRadius,
         );
-        newBlobs.add(newBlob);
+        newBlobs.add(newBlobA);
+
+        var newBlobB = BlobExtension.create(
+          position: blob.body.position + offset,
+          radius: splitRadius,
+        );
+        newBlobs.add(newBlobB);
+      } else {
+        newBlobs.add(blob);
       }
     }
-    blobs.addAll(newBlobs);
+    blobs = newBlobs;
     splittedAt = game.time;
 
     if (userId >= 0) {
-      print(' - ${blobs.length} blobs');
+      print(' - ${blobs.length} blobs area: $area');
     }
   }
 
   void joinBlobs(GameState game) {
-    if (userId >= 0) {
-      print('Joining blobs for $name');
-    }
     splittedAt = null;
     if (blobs.length <= 1) return;
 
+    if (userId >= 0) {
+      print('Joining blobs for $name area: $area');
+    }
+
     var joinedBlobPosition = center;
 
-    var joinedBlob = blobs.first;
+    // var joinedBlob = blobs.first;
     double totalArea = 0.0;
     for (var blob in blobs) {
       totalArea += blob.area;
     }
 
-    joinedBlob.area = totalArea;
-    joinedBlob.body.position = joinedBlobPosition;
-    blobs.removeWhere((e) => e != joinedBlob);
+    var joinedBlob = BlobExtension.create(
+      position: joinedBlobPosition,
+      radius: sqrt(totalArea / pi),
+    );
+
+    blobs = [joinedBlob];
+
+    // joinedBlob.area = totalArea;
+    // joinedBlob.body.position = joinedBlobPosition;
+    // blobs.removeWhere((e) => e != joinedBlob);
 
     if (userId >= 0) {
-      print(' - ${blobs.length} blobs');
+      print(' - ${blobs.length} blobs area: $area');
     }
   }
 
