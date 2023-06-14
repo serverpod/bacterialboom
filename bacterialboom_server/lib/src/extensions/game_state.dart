@@ -98,6 +98,10 @@ extension GameStateExtension on GameState {
           // Skip collisons with self.
           if (player.userId == otherPlayer.userId) continue;
 
+          // Skip collisions with players that have been alive for less
+          // than 5 seconds.
+          if (otherPlayer.getLifeTime(this) < 5) continue;
+
           // Check other players's blobs.
           for (var otherBlob in otherPlayer.blobs) {
             if (blob.body.collidesWith(otherBlob.body)) {
