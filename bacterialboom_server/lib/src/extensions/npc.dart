@@ -14,13 +14,16 @@ const _splitProbability = 0.1;
 extension NpcExtension on Player {
   static int _npcId = -1;
 
-  static Player create(GameState game) {
+  static Player create({
+    required GameState game,
+  }) {
     var random = Random();
     var npc = Player(
       name: 'NPC',
       userId: _npcId--,
       spawnedAt: game.time,
       score: 0,
+      colorIdx: game.nextColorIdx,
       blobs: [
         BlobExtension.create(
           position: Offset(
@@ -33,6 +36,7 @@ extension NpcExtension on Player {
     );
 
     game.players.add(npc);
+    game.nextColorIdx = (game.nextColorIdx + 1) % numPlayerColorIndices;
 
     return npc;
   }

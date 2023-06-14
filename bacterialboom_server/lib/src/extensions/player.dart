@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:bacterialboom_server/src/extensions/blob.dart';
 import 'package:bacterialboom_server/src/extensions/body.dart';
+import 'package:bacterialboom_server/src/extensions/game_state.dart';
 import 'package:bacterialboom_server/src/generated/protocol.dart';
 import 'package:bacterialboom_server/src/util/distance.dart';
 import 'package:bacterialboom_server/src/util/offset.dart';
@@ -18,6 +19,7 @@ extension PlayerExtension on Player {
       userId: userId,
       spawnedAt: game.time,
       score: 0,
+      colorIdx: game.nextColorIdx,
       blobs: [
         BlobExtension.create(
           position: Offset(
@@ -27,6 +29,8 @@ extension PlayerExtension on Player {
         ),
       ],
     );
+
+    game.nextColorIdx = (game.nextColorIdx + 1) % numPlayerColorIndices;
 
     return player;
   }

@@ -6,3 +6,4 @@ fields:
   players: List<Player>
   time: double
   deltaTime: double
+  nextColorIdx: int

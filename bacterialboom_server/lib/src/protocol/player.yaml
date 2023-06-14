@@ -6,3 +6,4 @@ fields:
   score: double
   splittedAt: double?
   spawnedAt: double
+  colorIdx: int

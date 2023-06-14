@@ -6,6 +6,8 @@ import 'package:bacterialboom_server/src/extensions/player.dart';
 import 'package:bacterialboom_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 
+const numPlayerColorIndices = 8;
+
 const _boardWidth = 1024.0;
 const _boardHeight = 1024.0;
 
@@ -38,6 +40,7 @@ extension GameStateExtension on GameState {
       players: [],
       time: 0.0,
       deltaTime: deltaTime,
+      nextColorIdx: 0,
     );
 
     newGame._spawnNpcs();
@@ -173,7 +176,7 @@ extension GameStateExtension on GameState {
   void _spawnNpcs() {
     int numNewNpcs = _maxPlayers - players.length;
     for (var i = 0; i < numNewNpcs; i++) {
-      NpcExtension.create(this);
+      NpcExtension.create(game: this);
     }
   }
 }

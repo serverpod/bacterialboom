@@ -17,6 +17,7 @@ class GameState extends _i1.SerializableEntity {
     required this.players,
     required this.time,
     required this.deltaTime,
+    required this.nextColorIdx,
   });
 
   factory GameState.fromJson(
@@ -35,6 +36,8 @@ class GameState extends _i1.SerializableEntity {
       time: serializationManager.deserialize<double>(jsonSerialization['time']),
       deltaTime: serializationManager
           .deserialize<double>(jsonSerialization['deltaTime']),
+      nextColorIdx: serializationManager
+          .deserialize<int>(jsonSerialization['nextColorIdx']),
     );
   }
 
@@ -50,6 +53,8 @@ class GameState extends _i1.SerializableEntity {
 
   double deltaTime;
 
+  int nextColorIdx;
+
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -59,6 +64,7 @@ class GameState extends _i1.SerializableEntity {
       'players': players,
       'time': time,
       'deltaTime': deltaTime,
+      'nextColorIdx': nextColorIdx,
     };
   }
 
@@ -71,6 +77,7 @@ class GameState extends _i1.SerializableEntity {
       'players': players,
       'time': time,
       'deltaTime': deltaTime,
+      'nextColorIdx': nextColorIdx,
     };
   }
 }

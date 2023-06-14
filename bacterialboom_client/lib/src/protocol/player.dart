@@ -17,6 +17,7 @@ class Player extends _i1.SerializableEntity {
     required this.score,
     this.splittedAt,
     required this.spawnedAt,
+    required this.colorIdx,
   });
 
   factory Player.fromJson(
@@ -35,6 +36,8 @@ class Player extends _i1.SerializableEntity {
           .deserialize<double?>(jsonSerialization['splittedAt']),
       spawnedAt: serializationManager
           .deserialize<double>(jsonSerialization['spawnedAt']),
+      colorIdx:
+          serializationManager.deserialize<int>(jsonSerialization['colorIdx']),
     );
   }
 
@@ -50,6 +53,8 @@ class Player extends _i1.SerializableEntity {
 
   double spawnedAt;
 
+  int colorIdx;
+
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -59,6 +64,7 @@ class Player extends _i1.SerializableEntity {
       'score': score,
       'splittedAt': splittedAt,
       'spawnedAt': spawnedAt,
+      'colorIdx': colorIdx,
     };
   }
 }

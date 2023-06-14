@@ -146,7 +146,7 @@ class GameBoard extends NodeWithSize {
             ),
           );
 
-          blobNode.color = isCurrentPlayer ? Colors.blue : Colors.red;
+          blobNode.colorIdx = player.colorIdx;
 
           if (_blobNodesForUserId(userId).length != player.blobs.length) {
             // The number of blobs for the player has changed. Update the
@@ -170,7 +170,7 @@ class GameBoard extends NodeWithSize {
             blobId: blob.blobId,
             maxVelocity: blob.maxVelocity,
             radius: blob.body.radius,
-            color: player.userId == userId ? Colors.blue : Colors.red,
+            colorIdx: player.colorIdx,
           );
           blobNode.position = Offset(blob.body.x, blob.body.y);
           addChild(blobNode);
