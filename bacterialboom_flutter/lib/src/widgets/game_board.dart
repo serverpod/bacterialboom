@@ -25,12 +25,8 @@ class GameBoardWidget extends StatefulWidget {
 }
 
 class GameBoardWidgetState extends State<GameBoardWidget> {
-  late final GameBoard _gameBoard = GameBoard(
-    gameState: widget.gameState,
-    inputController: widget.inputController,
-    userId: userId,
-  );
-  late final GameViewNode _gameView = GameViewNode(_gameBoard);
+  late final GameBoard _gameBoard;
+  late final GameViewNode _gameView;
   late final int userId;
 
   bool _isDoneSent = false;
@@ -39,6 +35,14 @@ class GameBoardWidgetState extends State<GameBoardWidget> {
   void initState() {
     super.initState();
     userId = sessionManager.signedInUser!.id!;
+
+    _gameBoard = GameBoard(
+      gameState: widget.gameState,
+      inputController: widget.inputController,
+      userId: userId,
+    );
+
+    _gameView = GameViewNode(_gameBoard);
   }
 
   @override
