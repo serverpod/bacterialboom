@@ -14,6 +14,7 @@ class Player extends _i1.SerializableEntity {
     required this.userId,
     required this.name,
     required this.blobs,
+    required this.numEatenFood,
     this.splittedAt,
     required this.spawnedAt,
   });
@@ -28,6 +29,8 @@ class Player extends _i1.SerializableEntity {
       name: serializationManager.deserialize<String>(jsonSerialization['name']),
       blobs: serializationManager
           .deserialize<List<_i2.Blob>>(jsonSerialization['blobs']),
+      numEatenFood: serializationManager
+          .deserialize<int>(jsonSerialization['numEatenFood']),
       splittedAt: serializationManager
           .deserialize<double?>(jsonSerialization['splittedAt']),
       spawnedAt: serializationManager
@@ -41,6 +44,8 @@ class Player extends _i1.SerializableEntity {
 
   List<_i2.Blob> blobs;
 
+  int numEatenFood;
+
   double? splittedAt;
 
   double spawnedAt;
@@ -51,6 +56,7 @@ class Player extends _i1.SerializableEntity {
       'userId': userId,
       'name': name,
       'blobs': blobs,
+      'numEatenFood': numEatenFood,
       'splittedAt': splittedAt,
       'spawnedAt': spawnedAt,
     };
@@ -62,6 +68,7 @@ class Player extends _i1.SerializableEntity {
       'userId': userId,
       'name': name,
       'blobs': blobs,
+      'numEatenFood': numEatenFood,
       'splittedAt': splittedAt,
       'spawnedAt': spawnedAt,
     };

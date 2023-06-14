@@ -3,6 +3,7 @@ import 'package:bacterialboom_flutter/main.dart';
 import 'package:bacterialboom_flutter/src/widgets/game_board.dart';
 import 'package:bacterialboom_flutter/src/widgets/connection_display.dart';
 import 'package:bacterialboom_flutter/src/widgets/game_controls.dart';
+import 'package:bacterialboom_flutter/src/widgets/highscore_list.dart';
 import 'package:flutter/material.dart';
 
 class GamePage extends StatefulWidget {
@@ -92,6 +93,13 @@ class _GamePageState extends State<GamePage> {
                 GameControlsWidget(
                   controller: _gameInputController,
                 ),
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: HighScoreList(
+                    gameState: _gameState!,
+                  ),
+                )
               ],
             ),
     );

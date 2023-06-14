@@ -13,6 +13,7 @@ extension PlayerExtension on Player {
       name: '$userId',
       userId: userId,
       spawnedAt: game.time,
+      numEatenFood: 0,
       blobs: [
         BlobExtension.create(
           position: Offset(

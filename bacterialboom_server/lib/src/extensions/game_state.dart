@@ -118,6 +118,7 @@ extension GameStateExtension on GameState {
               blob.body.collidesWith(food.body)) {
             blob.area += food.body.area;
             removeFoodIds.add(food.foodId);
+            player.numEatenFood += 1;
           }
         }
       }
