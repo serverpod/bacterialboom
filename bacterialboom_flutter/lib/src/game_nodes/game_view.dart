@@ -9,7 +9,6 @@ const _dampening = 0.95;
 class GameViewNode extends NodeWithSize {
   GameViewNode(this.gameBoard) : super(const Size(1024, 1024)) {
     addChild(gameBoard);
-    update(0);
   }
 
   final GameBoard gameBoard;
@@ -57,8 +56,6 @@ class GameViewNode extends NodeWithSize {
       gameBoard.scale = gameBoard.scale * timeAdjustedDampening +
           _targetScale! * (1 - timeAdjustedDampening);
     }
-
-    print('gameBoard offset: ${gameBoard.position} scale: ${gameBoard.scale}');
   }
 
   Offset _clampOffsetToView(Offset targetOffset, double scale) {
@@ -85,5 +82,13 @@ class GameViewNode extends NodeWithSize {
     targetOffset = Offset(targetOffsetX, targetOffsetY);
 
     return targetOffset;
+  }
+
+  @override
+  set size(Size size) {
+    if (size != this.size) {
+      super.size = size;
+      update(0);
+    }
   }
 }
