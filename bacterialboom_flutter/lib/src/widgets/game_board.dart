@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bacterialboom_client/bacterialboom_client.dart';
 import 'package:bacterialboom_flutter/main.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/game_board.dart';
+import 'package:bacterialboom_flutter/src/game_nodes/game_view.dart';
 import 'package:bacterialboom_flutter/src/widgets/game_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:spritewidget/spritewidget.dart';
@@ -29,6 +30,7 @@ class GameBoardWidgetState extends State<GameBoardWidget> {
     inputController: widget.inputController,
     userId: userId,
   );
+  late final GameViewNode _gameView = GameViewNode(_gameBoard);
   late final int userId;
 
   bool _isDoneSent = false;
@@ -41,10 +43,13 @@ class GameBoardWidgetState extends State<GameBoardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SpriteWidget(
-      _gameBoard,
-      transformMode: SpriteBoxTransformMode.scaleToFit,
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      _gameView.size = Size(constraints.maxWidth, constraints.maxHeight);
+      return SpriteWidget(
+        _gameView,
+        transformMode: SpriteBoxTransformMode.nativePoints,
+      );
+    });
   }
 
   @override

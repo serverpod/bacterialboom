@@ -202,6 +202,41 @@ class GameBoard extends NodeWithSize {
     return blobs;
   }
 
+  Offset get playerCenter {
+    var blobs = _blobNodesForUserId(userId);
+    if (blobs.isEmpty) {
+      return Offset.zero;
+    }
+
+    var center = Offset.zero;
+    for (var blob in blobs) {
+      center += blob.position;
+    }
+    center = center / blobs.length.toDouble();
+    return center;
+  }
+
+  Rect get playerBounds {
+    var blobs = _blobNodesForUserId(userId);
+    if (blobs.isEmpty) {
+      return Rect.zero;
+    }
+
+    Rect? bounds;
+    for (var blob in blobs) {
+      var blobBounds = Rect.fromCircle(
+        center: blob.position,
+        radius: blob.radius,
+      );
+      if (bounds == null) {
+        bounds = blobBounds;
+      } else {
+        bounds = bounds.expandToInclude(blobBounds);
+      }
+    }
+    return bounds!;
+  }
+
   void _avoidOverlappingBlobNodes(List<BlobNode> blobs) {
     for (var blob in blobs) {
       for (var otherBlob in blobs) {
