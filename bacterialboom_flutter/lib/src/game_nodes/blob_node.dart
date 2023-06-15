@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bacterialboom_flutter/src/util.dart/perlin_noise.dart';
+import 'package:bacterialboom_flutter/src/util.dart/noise.dart';
 import 'package:flutter/material.dart';
 import 'package:spritewidget/spritewidget.dart';
 
@@ -15,7 +15,7 @@ final blobColors = <Color>[
   Colors.cyan,
 ];
 
-final noiseGrid = generateLoopingPerlinNoise(360, 360);
+final noiseGrid = LoopingNoiseGrid(width: 512, height: 512, frequency: 1);
 
 class BlobNode extends Node {
   BlobNode({
@@ -29,7 +29,7 @@ class BlobNode extends Node {
     _borderPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
+      ..strokeWidth = 0.5;
 
     Random random = Random();
     _animationVal = random.nextDouble();
@@ -57,20 +57,19 @@ class BlobNode extends Node {
 
   @override
   void paint(Canvas canvas) {
-    canvas.drawCircle(
-      Offset.zero,
-      radius,
-      _fillPaint,
+    var noiseCircle = noiseGrid.getCircle(
+      xCenter: 0,
+      yCenter: _animationVal * 512,
+      radius: radius * 8,
+      numPoints: 360,
     );
-
-    var noiseGridRow = (360 * _animationVal).floor();
 
     var path = Path();
     for (var i = 0; i < 360; i++) {
       var rad = i * pi / 180;
-      var variation = 1 * noiseGrid[noiseGridRow][i];
-      var x = (radius + variation) * cos(rad);
-      var y = (radius + variation) * sin(rad);
+      var variation = 1 * noiseCircle[i];
+      var x = (radius + variation * 0.3 * radius) * cos(rad);
+      var y = (radius + variation * 0.3 * radius) * sin(rad);
       if (i == 0) {
         path.moveTo(x, y);
       } else {
@@ -78,6 +77,13 @@ class BlobNode extends Node {
       }
     }
     path.close();
+
+    canvas.drawPath(
+      path,
+      _fillPaint,
+    );
+
+    // Stroke the path
     canvas.drawPath(
       path,
       _borderPaint,

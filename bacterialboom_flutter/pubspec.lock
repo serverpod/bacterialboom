@@ -160,14 +160,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.1"
-  fast_noise:
-    dependency: "direct main"
-    description:
-      name: fast_noise
-      sha256: "271031cebf1602fc064472970e658fa7ff2f3b55a979bb430337b715bd55690b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   ffi:
     dependency: transitive
     description:
@@ -391,6 +383,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  open_simplex_2:
+    dependency: "direct main"
+    description:
+      name: open_simplex_2
+      sha256: "1c424efdf1bae7ae055b7f74d2e89d3ecfb780d88a2e48baf50e50716c581f00"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   path:
     dependency: transitive
     description:

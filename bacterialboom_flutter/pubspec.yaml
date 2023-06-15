@@ -24,11 +24,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-    
-  fast_noise: ^1.0.1
+
   serverpod_flutter: ^1.1.1
   serverpod_auth_shared_flutter: ^1.1.1
   serverpod_auth_email_flutter: ^1.1.1
+  open_simplex_2: ^0.2.1
   spritewidget: ^2.0.1
   bacterialboom_client:
     path: ../bacterialboom_client
