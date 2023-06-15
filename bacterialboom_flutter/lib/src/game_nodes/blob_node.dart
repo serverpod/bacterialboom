@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bacterialboom_flutter/main.dart';
 import 'package:bacterialboom_flutter/src/util.dart/mod.dart';
 import 'package:bacterialboom_flutter/src/util.dart/noise.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,36 @@ class BlobNode extends Node {
     _noiseOffset = (random.nextDouble() * _noiseGridSize).floor();
 
     zPosition = 10;
+
+    var particles = ParticleSystem(
+      texture: resourceManager.blobParticle,
+      posVar: Offset(radius * 0.5, radius * 0.5),
+      startSize: 0.01,
+      endSize: 0.01,
+      startSizeVar: 0.005,
+      endSizeVar: 0.005,
+      speed: 0.25,
+      speedVar: 0.1,
+      maxParticles: 5,
+      life: 5.0,
+      lifeVar: 1.0,
+      blendMode: BlendMode.multiply,
+      colorSequence: ColorSequence(
+        colors: [
+          Colors.black.withOpacity(0.0),
+          Colors.black.withOpacity(0.2),
+          Colors.black.withOpacity(0.2),
+          Colors.black.withOpacity(0.0),
+        ],
+        stops: [
+          0.0,
+          0.2,
+          0.8,
+          1.0,
+        ],
+      ),
+    );
+    addChild(particles);
   }
 
   final int userId;

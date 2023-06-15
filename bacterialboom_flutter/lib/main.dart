@@ -2,6 +2,7 @@ import 'package:bacterialboom_client/bacterialboom_client.dart';
 import 'package:bacterialboom_flutter/src/pages/game_page.dart';
 import 'package:bacterialboom_flutter/src/pages/sign_in_page.dart';
 import 'package:bacterialboom_flutter/src/pages/splash_page.dart';
+import 'package:bacterialboom_flutter/src/resource_manager/resource_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
@@ -9,10 +10,17 @@ import 'package:serverpod_flutter/serverpod_flutter.dart';
 late SessionManager sessionManager;
 late Client client;
 
+late ResourceManager resourceManager;
+
 void main() async {
-  // Setup Serverpod client and session manager.
+  // Make sure Flutter is initialized.
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Load resources
+  resourceManager = ResourceManager();
+  await resourceManager.load();
+
+  // Setup Serverpod client and session manager.
   client = Client(
     'http://localhost:8080/',
     authenticationKeyManager: FlutterAuthenticationKeyManager(),
