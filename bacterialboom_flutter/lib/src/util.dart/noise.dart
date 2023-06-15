@@ -42,6 +42,8 @@ class LoopingNoiseGrid {
   late final List<double> _grid;
 
   double get(int x, int y) {
+    x = ((x % width) + width) % width;
+    y = ((y % height) + height) % height;
     return _grid[y * width + x];
   }
 

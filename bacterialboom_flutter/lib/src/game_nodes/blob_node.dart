@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bacterialboom_flutter/src/util.dart/mod.dart';
 import 'package:bacterialboom_flutter/src/util.dart/noise.dart';
 import 'package:flutter/material.dart';
 import 'package:spritewidget/spritewidget.dart';
@@ -15,7 +16,13 @@ final blobColors = <Color>[
   Colors.cyan,
 ];
 
-final noiseGrid = LoopingNoiseGrid(width: 512, height: 512, frequency: 1);
+const _noiseGridSize = 512;
+
+final noiseGrid = LoopingNoiseGrid(
+  width: _noiseGridSize,
+  height: _noiseGridSize,
+  frequency: 1,
+);
 
 class BlobNode extends Node {
   BlobNode({
@@ -25,14 +32,25 @@ class BlobNode extends Node {
     required this.radius,
     required this.colorIdx,
   }) {
-    _fillPaint = Paint()..color = blobColors[colorIdx];
-    _borderPaint = Paint()
-      ..color = Colors.white
+    _borderPaintSmooth = Paint()
+      ..color = Colors.black12
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.5;
+      ..strokeWidth = 2.0;
+
+    _borderPaintMiter = Paint()
+      ..color = Colors.black12
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeJoin = StrokeJoin.round;
 
     Random random = Random();
-    _animationVal = random.nextDouble();
+    _blobShapeAnimationVal = random.nextDouble();
+    _spikeRotationAnimationVal = random.nextDouble();
+    _blobFocalPointAnimationVal = random.nextDouble();
+
+    _noiseOffset = (random.nextDouble() * _noiseGridSize).floor();
+
+    zPosition = 10;
   }
 
   final int userId;
@@ -41,52 +59,155 @@ class BlobNode extends Node {
   double radius;
   int colorIdx;
 
-  late final Paint _fillPaint;
-  late final Paint _borderPaint;
+  late final Paint _borderPaintSmooth;
+  late final Paint _borderPaintMiter;
+  late final int _noiseOffset;
 
-  late double _animationVal;
+  late double _blobShapeAnimationVal;
+  late double _blobFocalPointAnimationVal;
+  late double _spikeRotationAnimationVal;
 
   @override
   void update(double dt) {
     super.update(dt);
-    _animationVal += dt * 0.1;
-    while (_animationVal > 1) {
-      _animationVal -= 1;
+
+    _blobShapeAnimationVal += dt * 0.1;
+    while (_blobShapeAnimationVal > 1) {
+      _blobShapeAnimationVal -= 1;
+    }
+
+    _spikeRotationAnimationVal += dt * 0.13;
+    while (_spikeRotationAnimationVal > 1) {
+      _spikeRotationAnimationVal -= 1;
+    }
+
+    _blobFocalPointAnimationVal += dt * 0.052;
+    while (_blobFocalPointAnimationVal > 1) {
+      _blobFocalPointAnimationVal -= 1;
     }
   }
 
   @override
   void paint(Canvas canvas) {
-    var noiseCircle = noiseGrid.getCircle(
-      xCenter: 0,
-      yCenter: _animationVal * 512,
+    const numPoints = 360;
+    const spikeLength = 3.0;
+    const spikeWidth = 4;
+
+    var mainNoiseCircle = noiseGrid.getCircle(
+      xCenter: _noiseOffset.toDouble(),
+      yCenter: _blobShapeAnimationVal * _noiseGridSize,
       radius: radius * 8,
-      numPoints: 360,
+      numPoints: numPoints,
     );
 
-    var path = Path();
-    for (var i = 0; i < 360; i++) {
-      var rad = i * pi / 180;
-      var variation = 1 * noiseCircle[i];
-      var x = (radius + variation * 0.3 * radius) * cos(rad);
-      var y = (radius + variation * 0.3 * radius) * sin(rad);
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
+    var subNoiseCircle = noiseGrid.getCircle(
+      xCenter: _noiseOffset * 2,
+      yCenter: _blobShapeAnimationVal * _noiseGridSize,
+      radius: radius * 16,
+      numPoints: numPoints,
+    );
+
+    var numSpikes = (radius * 2).round();
+
+    var mainXs = List.filled(numPoints, 0.0);
+    var mainYs = List.filled(numPoints, 0.0);
+
+    var subXs = List.filled(numPoints, 0.0);
+    var subYs = List.filled(numPoints, 0.0);
+
+    // Caluclate path points.
+    for (var i = 0; i < numPoints; i++) {
+      var rad = i * 2 * pi / numPoints;
+
+      var mainVariation = 1.0 * mainNoiseCircle[i];
+      var subVariation = 1.0 * subNoiseCircle[i];
+
+      mainXs[i] = (radius + mainVariation * 0.3 * radius) * cos(rad);
+      mainYs[i] = (radius + mainVariation * 0.3 * radius) * sin(rad);
+
+      subXs[i] =
+          (radius + mainVariation * 0.3 * radius) * cos(rad) + subVariation * 1;
+      subYs[i] =
+          (radius + mainVariation * 0.3 * radius) * sin(rad) + subVariation * 1;
+    }
+
+    // Add spikes.
+    var rotVariation = noiseGrid.get(
+      (_spikeRotationAnimationVal * _noiseGridSize).floor(),
+      _noiseOffset,
+    );
+
+    for (var i = 0; i < numSpikes; i++) {
+      // var rad = i * pi / numSpikes * 2;
+      // rad += rotVariation * 0.5;
+      var pathIdx = (i * numPoints / numSpikes).floor();
+      pathIdx = (rotVariation * 90 + pathIdx).floor();
+      var rad = pathIdx * 2 * pi / numPoints;
+
+      for (int j = 0; j < spikeWidth; j++) {
+        var modIdx = mod(pathIdx + j, numPoints);
+
+        mainXs[modIdx] += spikeLength * cos(rad);
+        mainYs[modIdx] += spikeLength * sin(rad);
       }
     }
-    path.close();
+
+    // Build paths.
+    var mainPath = Path();
+    var subPath = Path();
+    for (var i = 0; i < numPoints; i += 1) {
+      if (i == 0) {
+        mainPath.moveTo(mainXs[i], mainYs[i]);
+        subPath.moveTo(subXs[i], subYs[i]);
+      } else {
+        mainPath.lineTo(mainXs[i], mainYs[i]);
+        subPath.lineTo(subXs[i], subYs[i]);
+      }
+    }
+    mainPath.close();
+    subPath.close();
+
+    // Create gradient fill.
+    var focalX = noiseGrid.get(
+          (_blobFocalPointAnimationVal * _noiseGridSize).floor(),
+          _noiseOffset,
+        ) *
+        0.8;
+    var focalY = noiseGrid.get(
+          _noiseOffset,
+          (_blobFocalPointAnimationVal * _noiseGridSize).floor(),
+        ) *
+        0.8;
+
+    var color1 = blobColors[colorIdx].withOpacity(0.5);
+    var color2 = color1.withOpacity(0.9);
+    var gradient = RadialGradient(
+      focal: Alignment(focalX, focalY),
+      colors: [color2, color1, color2],
+      stops: const [0.2, 0.6, 0.9],
+    );
+
+    var fillPaint = Paint()
+      ..shader = gradient.createShader(Rect.fromCircle(
+        center: Offset.zero,
+        radius: radius * 1.3 + spikeLength + 1,
+      ));
 
     canvas.drawPath(
-      path,
-      _fillPaint,
+      mainPath,
+      _borderPaintMiter,
+    );
+
+    canvas.drawPath(
+      mainPath,
+      fillPaint,
     );
 
     // Stroke the path
+
     canvas.drawPath(
-      path,
-      _borderPaint,
+      subPath,
+      _borderPaintSmooth,
     );
   }
 
