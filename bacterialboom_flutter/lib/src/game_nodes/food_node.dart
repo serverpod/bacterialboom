@@ -1,29 +1,54 @@
 import 'dart:math';
 
-import 'package:bacterialboom_flutter/src/game_nodes/blob_node.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/game_object_node.dart';
+import 'package:bacterialboom_flutter/src/resources/noise_grid.dart';
+import 'package:bacterialboom_flutter/src/util.dart/qsin.dart';
 import 'package:flutter/material.dart';
 
 class FoodNode extends GameObjectNode {
   FoodNode({
+    required this.foodId,
     required this.radius,
   }) {
+    _borderPaint = Paint()
+      ..color = Colors.black12
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    var color1 = Colors.green.withOpacity(0.5);
+    var color2 = Colors.green.withOpacity(0.9);
+    var gradient = RadialGradient(
+      colors: [color1, color2],
+      stops: const [0.0, 1.0],
+    );
+
+    _fillPaint = Paint()
+      ..shader = gradient.createShader(Rect.fromCircle(
+        center: Offset.zero,
+        radius: radius + 1,
+      ));
+
     Random random = Random();
     _foodShapeAnimationVal = random.nextDouble();
 
-    _noiseOffset = (random.nextDouble() * noiseGrid.width).floor();
+    _noiseOffset = (random.nextDouble() * noiseGridSize).floor();
   }
+
+  final int foodId;
 
   double radius;
 
   late double _foodShapeAnimationVal;
   late int _noiseOffset;
 
+  late final Paint _borderPaint;
+  late final Paint _fillPaint;
+
   @override
   void update(double dt) {
     super.update(dt);
 
-    _foodShapeAnimationVal += dt * 0.001;
+    _foodShapeAnimationVal += dt * 0.1;
     while (_foodShapeAnimationVal > 1) {
       _foodShapeAnimationVal -= 1;
     }
@@ -36,12 +61,12 @@ class FoodNode extends GameObjectNode {
       return;
     }
 
-    const numPoints = 360;
+    const numPoints = 90;
 
     var mainNoiseCircle = noiseGrid.getCircle(
       xCenter: _noiseOffset.toDouble(),
-      yCenter: _foodShapeAnimationVal * noiseGrid.height,
-      radius: 64,
+      yCenter: _foodShapeAnimationVal * noiseGridSize,
+      radius: 40,
       numPoints: numPoints,
     );
 
@@ -52,10 +77,10 @@ class FoodNode extends GameObjectNode {
     for (var i = 0; i < numPoints; i++) {
       var rad = i * 2 * pi / numPoints;
 
-      var mainVariation = 0.3 * mainNoiseCircle[i];
+      var mainVariation = 0.5 * mainNoiseCircle[i];
 
-      mainXs[i] = (radius + mainVariation * radius) * cos(rad);
-      mainYs[i] = (radius + mainVariation * radius) * sin(rad);
+      mainXs[i] = (radius + mainVariation * radius) * qcos(rad);
+      mainYs[i] = (radius + mainVariation * radius) * qsin(rad);
     }
 
     // Build paths.
@@ -69,15 +94,14 @@ class FoodNode extends GameObjectNode {
     }
     mainPath.close();
 
-    canvas.drawCircle(
-      Offset.zero,
-      radius,
-      Paint()..color = Colors.blue,
+    canvas.drawPath(
+      mainPath,
+      _fillPaint,
     );
 
     canvas.drawPath(
       mainPath,
-      Paint()..color = Colors.green,
+      _borderPaint,
     );
   }
 }

@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:bacterialboom_flutter/main.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/game_object_node.dart';
+import 'package:bacterialboom_flutter/src/resources/noise_grid.dart';
 import 'package:bacterialboom_flutter/src/util.dart/mod.dart';
-import 'package:bacterialboom_flutter/src/util.dart/noise.dart';
+import 'package:bacterialboom_flutter/src/util.dart/qsin.dart';
 import 'package:flutter/material.dart';
 import 'package:spritewidget/spritewidget.dart';
 
@@ -17,14 +18,6 @@ final blobColors = <Color>[
   Colors.pink,
   Colors.cyan,
 ];
-
-const _noiseGridSize = 512;
-
-final noiseGrid = LoopingNoiseGrid(
-  width: _noiseGridSize,
-  height: _noiseGridSize,
-  frequency: 1,
-);
 
 class BlobNode extends GameObjectNode {
   BlobNode({
@@ -50,7 +43,7 @@ class BlobNode extends GameObjectNode {
     _spikeRotationAnimationVal = random.nextDouble();
     _blobFocalPointAnimationVal = random.nextDouble();
 
-    _noiseOffset = (random.nextDouble() * _noiseGridSize).floor();
+    _noiseOffset = (random.nextDouble() * noiseGridSize).floor();
 
     zPosition = 10;
 
@@ -133,14 +126,14 @@ class BlobNode extends GameObjectNode {
 
     var mainNoiseCircle = noiseGrid.getCircle(
       xCenter: _noiseOffset.toDouble(),
-      yCenter: _blobShapeAnimationVal * _noiseGridSize,
+      yCenter: _blobShapeAnimationVal * noiseGridSize,
       radius: radius * 8,
       numPoints: numPoints,
     );
 
     var subNoiseCircle = noiseGrid.getCircle(
       xCenter: _noiseOffset * 2,
-      yCenter: _blobShapeAnimationVal * _noiseGridSize,
+      yCenter: _blobShapeAnimationVal * noiseGridSize,
       radius: radius * 16,
       numPoints: numPoints,
     );
@@ -160,22 +153,20 @@ class BlobNode extends GameObjectNode {
       var mainVariation = 0.3 * mainNoiseCircle[i];
       var subVariation = 1.0 * subNoiseCircle[i];
 
-      mainXs[i] = (radius + mainVariation * radius) * cos(rad);
-      mainYs[i] = (radius + mainVariation * radius) * sin(rad);
+      mainXs[i] = (radius + mainVariation * radius) * qcos(rad);
+      mainYs[i] = (radius + mainVariation * radius) * qsin(rad);
 
-      subXs[i] = (radius + mainVariation * radius) * cos(rad) + subVariation;
-      subYs[i] = (radius + mainVariation * radius) * sin(rad) + subVariation;
+      subXs[i] = (radius + mainVariation * radius) * qcos(rad) + subVariation;
+      subYs[i] = (radius + mainVariation * radius) * qsin(rad) + subVariation;
     }
 
     // Add spikes.
     var rotVariation = noiseGrid.get(
-      (_spikeRotationAnimationVal * _noiseGridSize).floor(),
+      (_spikeRotationAnimationVal * noiseGridSize).floor(),
       _noiseOffset,
     );
 
     for (var i = 0; i < numSpikes; i++) {
-      // var rad = i * pi / numSpikes * 2;
-      // rad += rotVariation * 0.5;
       var pathIdx = (i * numPoints / numSpikes).floor();
       pathIdx = (rotVariation * 90 + pathIdx).floor();
       var rad = pathIdx * 2 * pi / numPoints;
@@ -183,8 +174,8 @@ class BlobNode extends GameObjectNode {
       for (int j = 0; j < spikeWidth; j++) {
         var modIdx = mod(pathIdx + j, numPoints);
 
-        mainXs[modIdx] += spikeLength * cos(rad);
-        mainYs[modIdx] += spikeLength * sin(rad);
+        mainXs[modIdx] += spikeLength * qcos(rad);
+        mainYs[modIdx] += spikeLength * qsin(rad);
       }
     }
 
@@ -205,13 +196,13 @@ class BlobNode extends GameObjectNode {
 
     // Create gradient fill.
     var focalX = noiseGrid.get(
-          (_blobFocalPointAnimationVal * _noiseGridSize).floor(),
+          (_blobFocalPointAnimationVal * noiseGridSize).floor(),
           _noiseOffset,
         ) *
         0.8;
     var focalY = noiseGrid.get(
           _noiseOffset,
-          (_blobFocalPointAnimationVal * _noiseGridSize).floor(),
+          (_blobFocalPointAnimationVal * noiseGridSize).floor(),
         ) *
         0.8;
 

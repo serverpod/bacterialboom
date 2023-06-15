@@ -3,7 +3,6 @@ import 'package:bacterialboom_flutter/main.dart';
 import 'package:bacterialboom_flutter/src/extensions/offset.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/blob_node.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/food_node.dart';
-import 'package:bacterialboom_flutter/src/game_nodes/game_view.dart';
 import 'package:bacterialboom_flutter/src/util.dart/distance.dart';
 import 'package:bacterialboom_flutter/src/widgets/game_controls.dart';
 import 'package:flutter/material.dart';
@@ -179,15 +178,43 @@ class GameBoard extends NodeWithSize {
       }
     }
 
-    // Update food.
-    children.removeWhere((e) => e is FoodNode);
+    // Make a list of all food ids in the update.
+    var foodInUpdate = <int>{};
+    for (var food in gameState.food) {
+      foodInUpdate.add(food.foodId);
+    }
+
+    // Remove food that are not in the update.
+    var foodToRemove = <FoodNode>[];
+    for (var child in children) {
+      if (child is FoodNode) {
+        if (!foodInUpdate.contains(child.foodId)) {
+          foodToRemove.add(child);
+        }
+      }
+    }
+
+    for (var food in foodToRemove) {
+      food.removeFromParent();
+    }
+
+    // Make a map of all food that are on the current board.
+    var foodOnBoard = <int, FoodNode>{};
+    for (var child in children) {
+      if (child is FoodNode) {
+        foodOnBoard[child.foodId] = child;
+      }
+    }
 
     for (var food in gameState.food) {
-      var foodNode = FoodNode(
-        radius: food.body.radius,
-      );
-      foodNode.position = Offset(food.body.x, food.body.y);
-      addChild(foodNode);
+      if (!foodOnBoard.containsKey(food.foodId)) {
+        var foodNode = FoodNode(
+          foodId: food.foodId,
+          radius: food.body.radius,
+        );
+        foodNode.position = Offset(food.body.x, food.body.y);
+        addChild(foodNode);
+      }
     }
 
     _sentCmdSplit = false;

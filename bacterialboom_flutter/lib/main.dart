@@ -2,7 +2,7 @@ import 'package:bacterialboom_client/bacterialboom_client.dart';
 import 'package:bacterialboom_flutter/src/pages/game_page.dart';
 import 'package:bacterialboom_flutter/src/pages/sign_in_page.dart';
 import 'package:bacterialboom_flutter/src/pages/splash_page.dart';
-import 'package:bacterialboom_flutter/src/resource_manager/resource_manager.dart';
+import 'package:bacterialboom_flutter/src/resources/resource_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
