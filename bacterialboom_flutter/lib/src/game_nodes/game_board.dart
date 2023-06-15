@@ -3,6 +3,7 @@ import 'package:bacterialboom_flutter/main.dart';
 import 'package:bacterialboom_flutter/src/extensions/offset.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/blob_node.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/food_node.dart';
+import 'package:bacterialboom_flutter/src/game_nodes/game_view.dart';
 import 'package:bacterialboom_flutter/src/util.dart/distance.dart';
 import 'package:bacterialboom_flutter/src/widgets/game_controls.dart';
 import 'package:flutter/material.dart';
@@ -182,7 +183,9 @@ class GameBoard extends NodeWithSize {
     children.removeWhere((e) => e is FoodNode);
 
     for (var food in gameState.food) {
-      var foodNode = FoodNode(radius: food.body.radius);
+      var foodNode = FoodNode(
+        radius: food.body.radius,
+      );
       foodNode.position = Offset(food.body.x, food.body.y);
       addChild(foodNode);
     }

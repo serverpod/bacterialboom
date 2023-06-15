@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:spritewidget/spritewidget.dart';
 
 class ResourceManager {

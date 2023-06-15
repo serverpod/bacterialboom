@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bacterialboom_flutter/main.dart';
+import 'package:bacterialboom_flutter/src/game_nodes/game_object_node.dart';
 import 'package:bacterialboom_flutter/src/util.dart/mod.dart';
 import 'package:bacterialboom_flutter/src/util.dart/noise.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ final noiseGrid = LoopingNoiseGrid(
   frequency: 1,
 );
 
-class BlobNode extends Node {
+class BlobNode extends GameObjectNode {
   BlobNode({
     required this.userId,
     required this.blobId,
@@ -123,6 +124,12 @@ class BlobNode extends Node {
     const numPoints = 360;
     const spikeLength = 3.0;
     const spikeWidth = 4;
+    var maxRadius = radius * 1.3 + spikeLength + 1;
+
+    // Don't draw if not in view.
+    if (!isInViewFrame(maxRadius)) {
+      return;
+    }
 
     var mainNoiseCircle = noiseGrid.getCircle(
       xCenter: _noiseOffset.toDouble(),
@@ -150,16 +157,14 @@ class BlobNode extends Node {
     for (var i = 0; i < numPoints; i++) {
       var rad = i * 2 * pi / numPoints;
 
-      var mainVariation = 1.0 * mainNoiseCircle[i];
+      var mainVariation = 0.3 * mainNoiseCircle[i];
       var subVariation = 1.0 * subNoiseCircle[i];
 
-      mainXs[i] = (radius + mainVariation * 0.3 * radius) * cos(rad);
-      mainYs[i] = (radius + mainVariation * 0.3 * radius) * sin(rad);
+      mainXs[i] = (radius + mainVariation * radius) * cos(rad);
+      mainYs[i] = (radius + mainVariation * radius) * sin(rad);
 
-      subXs[i] =
-          (radius + mainVariation * 0.3 * radius) * cos(rad) + subVariation * 1;
-      subYs[i] =
-          (radius + mainVariation * 0.3 * radius) * sin(rad) + subVariation * 1;
+      subXs[i] = (radius + mainVariation * radius) * cos(rad) + subVariation;
+      subYs[i] = (radius + mainVariation * radius) * sin(rad) + subVariation;
     }
 
     // Add spikes.
@@ -221,7 +226,7 @@ class BlobNode extends Node {
     var fillPaint = Paint()
       ..shader = gradient.createShader(Rect.fromCircle(
         center: Offset.zero,
-        radius: radius * 1.3 + spikeLength + 1,
+        radius: maxRadius,
       ));
 
     canvas.drawPath(

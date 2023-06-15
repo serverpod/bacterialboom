@@ -53,7 +53,7 @@ class LoopingNoiseGrid {
     required double radius,
     int numPoints = 360,
   }) {
-    var points = List<double>.filled(numPoints, 0.0);
+    var circlePoints = List<double>.filled(numPoints, 0.0);
 
     for (var i = 0; i < numPoints; i++) {
       var rad = 2 * pi * i / numPoints;
@@ -63,9 +63,9 @@ class LoopingNoiseGrid {
       var xMod = ((x % width) + width) % width;
       var yMod = ((y % height) + height) % height;
 
-      points[i] = _grid[yMod * width + xMod];
+      circlePoints[i] = _grid[yMod * width + xMod];
     }
 
-    return points;
+    return circlePoints;
   }
 }
