@@ -61,7 +61,7 @@ class FoodNode extends GameObjectNode {
       return;
     }
 
-    const numPoints = 90;
+    const numPoints = 45;
 
     var mainNoiseCircle = noiseGrid.getCircle(
       xCenter: _noiseOffset.toDouble(),
