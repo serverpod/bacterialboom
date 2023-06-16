@@ -1,6 +1,7 @@
 import 'package:bacterialboom_client/bacterialboom_client.dart';
 import 'package:bacterialboom_flutter/main.dart';
 import 'package:bacterialboom_flutter/src/extensions/offset.dart';
+import 'package:bacterialboom_flutter/src/game_nodes/background_node.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/blob_node.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/food_node.dart';
 import 'package:bacterialboom_flutter/src/util.dart/distance.dart';
@@ -19,6 +20,9 @@ class GameBoard extends NodeWithSize {
         )) {
     updateGameState(gameState);
     inputController.onPerformAction = _onPerformAction;
+
+    var background = BackgroundNode();
+    addChild(background);
   }
 
   GameState gameState;

@@ -47,6 +47,26 @@ class LoopingNoiseGrid {
     return _grid[y * width + x];
   }
 
+  double getInterpolated(double x, double y) {
+    var x0 = x.floor();
+    var x1 = x0 + 1;
+    var y0 = y.floor();
+    var y1 = y0 + 1;
+
+    var sx = x - x0;
+    var sy = y - y0;
+
+    var n0 = get(x0, y0);
+    var n1 = get(x1, y0);
+    var ix0 = _lerp(n0, n1, sx);
+
+    n0 = get(x0, y1);
+    n1 = get(x1, y1);
+    var ix1 = _lerp(n0, n1, sx);
+
+    return _lerp(ix0, ix1, sy);
+  }
+
   List<double> getCircle({
     required double xCenter,
     required double yCenter,
@@ -68,4 +88,8 @@ class LoopingNoiseGrid {
 
     return circlePoints;
   }
+}
+
+double _lerp(double a, double b, double t) {
+  return a + (b - a) * t;
 }
