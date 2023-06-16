@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 const _gridSizeX = 64;
 const _gridSizeY = 64;
 
-class BackgroundNode extends GameObjectNode {
-  BackgroundNode() {
+class BackgroundParticlesNode extends GameObjectNode {
+  BackgroundParticlesNode() {
     Random random = Random();
     _positionAnimationVal = random.nextDouble();
     _sizeAnimationVal = random.nextDouble();

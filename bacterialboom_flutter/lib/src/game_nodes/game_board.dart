@@ -21,7 +21,7 @@ class GameBoard extends NodeWithSize {
     updateGameState(gameState);
     inputController.onPerformAction = _onPerformAction;
 
-    var background = BackgroundNode();
+    var background = BackgroundParticlesNode();
     addChild(background);
   }
 
