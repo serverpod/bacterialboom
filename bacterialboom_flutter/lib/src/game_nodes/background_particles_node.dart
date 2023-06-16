@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 const _gridSizeX = 64;
 const _gridSizeY = 64;
 
-class BackgroundParticlesNode extends GameObjectNode {
-  BackgroundParticlesNode() {
+class BackgroundParticlesLayerNode extends GameObjectNode {
+  BackgroundParticlesLayerNode() {
     Random random = Random();
     _positionAnimationVal = random.nextDouble();
     _sizeAnimationVal = random.nextDouble();
@@ -35,27 +35,22 @@ class BackgroundParticlesNode extends GameObjectNode {
 
   @override
   void paint(Canvas canvas) {
-    var spaceBetweenDotsX = gameBoardSize.width / _gridSizeX;
-    var spaceBetweenDotsY = gameBoardSize.height / _gridSizeY;
+    var spaceBetweenDotsX = gameBoard.size.width / _gridSizeX;
+    var spaceBetweenDotsY = gameBoard.size.height / _gridSizeY;
 
     var frame = viewFrame;
 
     frame = Rect.fromLTWH(
-      frame.left + 10,
-      frame.top + 10,
-      frame.width - 20,
-      frame.height - 20,
+      frame.left + 32,
+      frame.top + 32,
+      frame.width - 64,
+      frame.height - 64,
     );
 
     int startX = (frame.left / spaceBetweenDotsX).floor();
     int endX = (frame.right / spaceBetweenDotsX).ceil();
     int startY = (frame.top / spaceBetweenDotsY).floor();
     int endY = (frame.bottom / spaceBetweenDotsY).ceil();
-
-    startX = startX.clamp(0, _gridSizeX - 1);
-    endX = endX.clamp(0, _gridSizeX - 1);
-    startY = startY.clamp(0, _gridSizeY - 1);
-    endY = endY.clamp(0, _gridSizeY - 1);
 
     var paint = Paint()
       ..filterQuality = FilterQuality.low
@@ -108,7 +103,7 @@ class BackgroundParticlesNode extends GameObjectNode {
         );
         transforms.add(transform);
 
-        var color = Colors.white.withOpacity(0.3 + opacityVar * 0.29);
+        var color = Colors.white.withOpacity((0.3 + opacityVar * 0.29) * scale);
         colors.add(color);
       }
     }
@@ -123,6 +118,50 @@ class BackgroundParticlesNode extends GameObjectNode {
       paint,
     );
 
-    // canvas.drawRect(frame, paint);
+    // canvas.drawRect(frame, Paint()..color = Colors.blue.withOpacity(0.5));
+  }
+}
+
+class BackgroundParticlesNode extends GameObjectNode {
+  Offset? _localStartingCenter;
+
+  BackgroundParticlesNode() {
+    _layers.add(BackgroundParticlesLayerNode()..scale = 0.5);
+    _layers.add(BackgroundParticlesLayerNode()..scale = 0.75);
+    _layers.add(BackgroundParticlesLayerNode());
+
+    for (var layer in _layers) {
+      addChild(layer);
+    }
+  }
+
+  final _layers = <BackgroundParticlesLayerNode>[];
+
+  @override
+  void update(double dt) {
+    if (_localStartingCenter == null) {
+      var viewSize = gameView.size;
+      var globalStartingCenter = Offset(
+        viewSize.width / 2,
+        viewSize.height / 2,
+      );
+      _localStartingCenter = convertPointToNodeSpace(globalStartingCenter);
+    }
+
+    for (var layer in _layers) {
+      if (layer.scale == 1) {
+        continue;
+      }
+      var viewSize = gameView.size;
+      var globalStartingCenter = Offset(
+        viewSize.width / 2,
+        viewSize.height / 2,
+      );
+      var localCenter = convertPointToNodeSpace(globalStartingCenter);
+
+      var localOffset = localCenter - _localStartingCenter!;
+
+      layer.position = localOffset * layer.scale;
+    }
   }
 }

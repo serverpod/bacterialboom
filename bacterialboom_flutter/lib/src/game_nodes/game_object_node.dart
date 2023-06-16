@@ -46,9 +46,4 @@ class GameObjectNode extends Node {
         globalPosition.dy > -radius * globalScale &&
         globalPosition.dy < gameView.size.height + radius * globalScale);
   }
-
-  Size get gameBoardSize {
-    var gameNode = parent as GameBoard;
-    return gameNode.size;
-  }
 }

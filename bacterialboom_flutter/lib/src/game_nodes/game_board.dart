@@ -1,7 +1,7 @@
 import 'package:bacterialboom_client/bacterialboom_client.dart';
 import 'package:bacterialboom_flutter/main.dart';
 import 'package:bacterialboom_flutter/src/extensions/offset.dart';
-import 'package:bacterialboom_flutter/src/game_nodes/background_node.dart';
+import 'package:bacterialboom_flutter/src/game_nodes/background_particles_node.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/blob_node.dart';
 import 'package:bacterialboom_flutter/src/game_nodes/food_node.dart';
 import 'package:bacterialboom_flutter/src/util.dart/distance.dart';
