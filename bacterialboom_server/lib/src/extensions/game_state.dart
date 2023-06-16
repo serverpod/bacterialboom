@@ -117,12 +117,12 @@ extension GameStateExtension on GameState {
           }
         }
         // Collisions with food.
-        for (var food in this.food) {
-          if (!removeFoodIds.contains(food.foodId) &&
-              blob.body.collidesWith(food.body)) {
-            blob.area += food.body.area;
-            removeFoodIds.add(food.foodId);
-            player.score += food.body.area / defaultFoodArea;
+        for (var f in food) {
+          if (!removeFoodIds.contains(f.foodId) &&
+              blob.body.collidesWith(f.body)) {
+            blob.area += f.body.area;
+            removeFoodIds.add(f.foodId);
+            player.score += f.body.area / defaultFoodArea;
           }
         }
       }
@@ -169,7 +169,7 @@ extension GameStateExtension on GameState {
   void _spawnFood() {
     var numNewFood = _maxFood - food.length;
     for (var i = 0; i < numNewFood; i++) {
-      food.add(FoodExtension.create(this));
+      FoodExtension.create(this);
     }
   }
 

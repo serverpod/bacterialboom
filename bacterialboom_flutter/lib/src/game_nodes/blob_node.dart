@@ -231,7 +231,6 @@ class BlobNode extends GameObjectNode {
     );
 
     // Stroke the path
-
     canvas.drawPath(
       subPath,
       _borderPaintSmooth,
