@@ -114,9 +114,9 @@ class BlobNode extends GameObjectNode {
 
   @override
   void paint(Canvas canvas) {
-    const numPoints = 360;
+    const numPoints = 180;
     const spikeLength = 3.0;
-    const spikeWidth = 4;
+    const spikeWidth = 2;
     var maxRadius = radius * 1.3 + spikeLength + 1;
 
     // Don't draw if not in view.
