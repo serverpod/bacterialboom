@@ -5,23 +5,41 @@ import 'package:bacterialboom_flutter/src/game_nodes/game_view.dart';
 import 'package:spritewidget/spritewidget.dart';
 
 class GameObjectNode extends Node {
-  Rect get viewFrame {
-    var gameNode = parent as GameBoard;
-    var gameView = gameNode.parent as GameViewNode;
+  GameViewNode get gameView {
+    var p = parent;
+    while (p is! GameViewNode) {
+      p = p!.parent;
+    }
+    return p;
+  }
 
-    return Rect.fromLTWH(
-        -gameNode.position.dx / gameNode.scale,
-        -gameNode.position.dy / gameNode.scale,
-        gameView.size.width / gameNode.scale,
-        gameView.size.height / gameNode.scale);
+  GameBoard get gameBoard {
+    var p = parent;
+    while (p is! GameBoard) {
+      p = p!.parent;
+    }
+    return p;
+  }
+
+  Rect get viewFrame {
+    var topLeft = convertPointFromNode(
+      Offset.zero,
+      gameView,
+    );
+
+    var bottomRight = convertPointFromNode(
+      Offset(gameView.size.width, gameView.size.height),
+      gameView,
+    );
+
+    return Rect.fromPoints(topLeft, bottomRight);
   }
 
   bool isInViewFrame(double radius) {
-    var gameNode = parent as GameBoard;
-    var gameView = gameNode.parent as GameViewNode;
+    // TODO: Use the viewFrame property instead.
 
     var globalPosition = convertPointToBoxSpace(Offset.zero);
-    var globalScale = gameNode.scale;
+    var globalScale = gameBoard.scale;
 
     return (globalPosition.dx > -radius * globalScale &&
         globalPosition.dx < gameView.size.width + radius * globalScale &&
