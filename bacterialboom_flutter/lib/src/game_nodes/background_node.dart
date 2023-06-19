@@ -106,7 +106,7 @@ class BackgroundParticlesLayerNode extends GameObjectNode {
 
         var transform = RSTransform.fromComponents(
           rotation: rotation,
-          scale: 0.02 + sizeVar * 0.0049,
+          scale: 0.03 + sizeVar * 0.01,
           anchorX: rect.width / 2,
           anchorY: rect.height / 2,
           translateX: x,
@@ -180,7 +180,7 @@ class BackgroundNode extends GameObjectNode {
   @override
   void update(double dt) {
     for (var layer in _layers) {
-      layer.position = _layerPosition(layer.scale);
+      layer.position = -_layerPosition(layer.scale);
     }
   }
 
