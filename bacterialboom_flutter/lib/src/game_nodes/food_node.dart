@@ -15,11 +15,12 @@ class FoodNode extends GameObjectNode {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
-    var color1 = Colors.green.withOpacity(0.5);
-    var color2 = Colors.green.withOpacity(0.9);
-    var gradient = RadialGradient(
-      colors: [color1, color2],
-      stops: const [0.0, 1.0],
+    var gradient = const RadialGradient(
+      colors: [
+        Color(0xff9fe709),
+        Color(0xff11dc33),
+      ],
+      stops: [0.0, 1.0],
     );
 
     _fillPaint = Paint()

@@ -8,15 +8,26 @@ import 'package:bacterialboom_flutter/src/util.dart/qsin.dart';
 import 'package:flutter/material.dart';
 import 'package:spritewidget/spritewidget.dart';
 
-final blobColors = <Color>[
+final blobColorsLight = <Color>[
   Colors.red,
   Colors.blue,
   Colors.yellow,
   Colors.purple,
   Colors.orange,
-  Colors.teal,
+  Colors.deepOrange,
   Colors.pink,
   Colors.cyan,
+];
+
+final blobColorsDark = <Color>[
+  Colors.red[800]!,
+  Colors.blue[800]!,
+  Colors.yellow[800]!,
+  Colors.purple[800]!,
+  Colors.orange[800]!,
+  Colors.deepOrange[800]!,
+  Colors.pink[800]!,
+  Colors.cyan[800]!,
 ];
 
 class BlobNode extends GameObjectNode {
@@ -206,8 +217,8 @@ class BlobNode extends GameObjectNode {
         ) *
         0.8;
 
-    var color1 = blobColors[colorIdx].withOpacity(0.5);
-    var color2 = color1.withOpacity(0.9);
+    var color1 = blobColorsDark[colorIdx];
+    var color2 = blobColorsLight[colorIdx];
     var gradient = RadialGradient(
       focal: Alignment(focalX, focalY),
       colors: [color2, color1, color2],
