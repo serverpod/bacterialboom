@@ -23,11 +23,10 @@ class GameViewNode extends NodeWithSize {
     var longestViewSide = math.max(size.width, size.height);
     var longestPlayerSide = math.max(playerBounds.width, playerBounds.height);
 
-    var minScale = longestViewSide / 25 / 20;
-    var targetScale = longestViewSide / longestPlayerSide / 20;
-    if (targetScale < minScale) {
-      targetScale = minScale;
-    }
+    var minScale = longestViewSide / 20 / 20;
+    var maxScale = longestViewSide / 10 / 20;
+    var targetScale =
+        (longestViewSide / longestPlayerSide / 10).clamp(minScale, maxScale);
 
     var viewCenter = Offset(size.width / 2, size.height / 2);
     var targetOffset = viewCenter - focus * targetScale;
