@@ -1,3 +1,4 @@
+import 'package:bacterialboom_flutter/main.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatelessWidget {
@@ -12,11 +13,19 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: onPressedPlay,
-        child: const Text('Play'),
-      ),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(
+          color: Colors.black,
+        ),
+        Center(
+          child: ElevatedButton(
+            onPressed: onPressedPlay,
+            child: const Text('Play'),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -41,6 +41,8 @@ class LoopingNoiseGrid {
   late final OpenSimplex2 _noise;
   late final List<double> _grid;
 
+  List<double> get data => _grid;
+
   double get(int x, int y) {
     x = ((x % width) + width) % width;
     y = ((y % height) + height) % height;

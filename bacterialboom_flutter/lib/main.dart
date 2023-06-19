@@ -46,7 +46,7 @@ class BacterialBoomApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MainPage(title: 'Bacterial Boom'),
-      showPerformanceOverlay: true,
+      // showPerformanceOverlay: true,
     );
   }
 }
