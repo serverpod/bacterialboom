@@ -114,7 +114,6 @@ class BackgroundParticlesLayerNode extends GameObjectNode {
         );
         transforms.add(transform);
 
-        // var color = Colors.white.withOpacity((0.3 + opacityVar * 0.29) * scale);
         var color = _colorSequence
             .colorAtPosition(opacityVar * 0.5 + 0.5)
             .withOpacity(((0.5 + opacityVar * 0.49) * scale * 4).clamp(0, 1));
@@ -131,8 +130,6 @@ class BackgroundParticlesLayerNode extends GameObjectNode {
       null,
       paint,
     );
-
-    // canvas.drawRect(frame, Paint()..color = Colors.blue.withOpacity(0.5));
   }
 }
 
