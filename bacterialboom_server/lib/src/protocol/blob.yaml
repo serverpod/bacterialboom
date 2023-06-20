@@ -4,3 +4,5 @@ fields:
   blobId: int
   body: Body
   maxVelocity: double
+  xTarget: double?
+  yTarget: double?

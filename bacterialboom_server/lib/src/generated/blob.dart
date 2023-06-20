@@ -15,6 +15,8 @@ class Blob extends _i1.SerializableEntity {
     required this.blobId,
     required this.body,
     required this.maxVelocity,
+    this.xTarget,
+    this.yTarget,
   });
 
   factory Blob.fromJson(
@@ -30,6 +32,10 @@ class Blob extends _i1.SerializableEntity {
           serializationManager.deserialize<_i2.Body>(jsonSerialization['body']),
       maxVelocity: serializationManager
           .deserialize<double>(jsonSerialization['maxVelocity']),
+      xTarget: serializationManager
+          .deserialize<double?>(jsonSerialization['xTarget']),
+      yTarget: serializationManager
+          .deserialize<double?>(jsonSerialization['yTarget']),
     );
   }
 
@@ -41,6 +47,10 @@ class Blob extends _i1.SerializableEntity {
 
   double maxVelocity;
 
+  double? xTarget;
+
+  double? yTarget;
+
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -48,6 +58,8 @@ class Blob extends _i1.SerializableEntity {
       'blobId': blobId,
       'body': body,
       'maxVelocity': maxVelocity,
+      'xTarget': xTarget,
+      'yTarget': yTarget,
     };
   }
 
@@ -58,6 +70,8 @@ class Blob extends _i1.SerializableEntity {
       'blobId': blobId,
       'body': body,
       'maxVelocity': maxVelocity,
+      'xTarget': xTarget,
+      'yTarget': yTarget,
     };
   }
 }

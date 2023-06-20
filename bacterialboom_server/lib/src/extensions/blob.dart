@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bacterialboom_server/src/generated/protocol.dart';
 import 'package:bacterialboom_server/src/extensions/body.dart';
 import 'package:bacterialboom_server/src/extensions/game_state.dart';
+import 'package:bacterialboom_server/src/util/distance.dart';
 import 'package:bacterialboom_server/src/util/offset.dart';
 
 const defaultBlobRadius = 5.0;
@@ -52,6 +53,10 @@ extension BlobExtension on Blob {
     GameState game, {
     bool reverse = false,
   }) {
+    // Update target.
+    xTarget = target.x;
+    yTarget = target.y;
+
     var angle = atan2(
       target.y - body.y,
       target.x - body.x,
@@ -63,8 +68,15 @@ extension BlobExtension on Blob {
 
     var moveDistance = maxVelocity * GameStateExtension.deltaTime;
 
-    body.x += cos(angle) * moveDistance;
-    body.y += sin(angle) * moveDistance;
+    if (approximateDistance(target, body.position) < moveDistance) {
+      // We reached the target. Reset so that we will look for another one.
+      body.position = target;
+      xTarget = null;
+      yTarget = null;
+    } else {
+      body.x += cos(angle) * moveDistance;
+      body.y += sin(angle) * moveDistance;
+    }
 
     body.constrainPosition(game);
   }
@@ -82,4 +94,12 @@ extension BlobExtension on Blob {
   }
 
   bool get canSplit => area >= minimumBlobArea * 2;
+
+  Offset? get target {
+    if (xTarget != null && yTarget != null) {
+      return Offset(xTarget!, yTarget!);
+    } else {
+      return null;
+    }
+  }
 }
