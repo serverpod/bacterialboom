@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:bacterialboom_flutter/src/resources/noise_grid.dart';
 import 'package:bacterialboom_flutter/src/util.dart/image_from_pixels.dart';
 import 'package:bacterialboom_flutter/src/util.dart/noise.dart';
 import 'package:flutter/material.dart';

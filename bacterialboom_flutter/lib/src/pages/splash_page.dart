@@ -1,4 +1,3 @@
-import 'package:bacterialboom_flutter/main.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatelessWidget {
