@@ -104,14 +104,25 @@ class BackgroundParticlesLayerNode extends GameObjectNode {
         var rect = texture.frame;
         rects.add(rect);
 
-        var transform = RSTransform.fromComponents(
-          rotation: rotation,
-          scale: 0.03 + sizeVar * 0.01,
-          anchorX: rect.width / 2,
-          anchorY: rect.height / 2,
-          translateX: x,
-          translateY: y,
-        );
+        // These values are adapted from RSTransform.fromComponents,
+        // but simplified as rotation is always 0.
+        //
+        // var transform = RSTransform.fromComponents(
+        //   rotation: rotation,
+        //   scale: 0.03 + sizeVar * 0.01,
+        //   anchorX: rect.width / 2,
+        //   anchorY: rect.height / 2,
+        //   translateX: x,
+        //   translateY: y,
+        // );
+        var anchorX = rect.width / 2;
+        var anchorY = rect.height / 2;
+        var scos = 0.03 + sizeVar * 0.01;
+        var ssin = 0.0;
+        var tx = x + -scos * anchorX + ssin * anchorY;
+        var ty = y + -ssin * anchorX - scos * anchorY;
+        var transform = RSTransform(scos, ssin, tx, ty);
+
         transforms.add(transform);
 
         var color = _colorSequence
