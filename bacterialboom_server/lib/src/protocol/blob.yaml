@@ -1,5 +1,6 @@
 class: Blob
 fields:
+  userId: int
   blobId: int
   body: Body
   maxVelocity: double

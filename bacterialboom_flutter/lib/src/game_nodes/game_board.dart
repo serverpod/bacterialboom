@@ -71,6 +71,7 @@ class GameBoard extends NodeWithSize {
       for (var blobNode in blobNodes) {
         blobs.add(
           Blob(
+            userId: userId,
             blobId: blobNode.blobId,
             body: Body(
               x: blobNode.position.dx,

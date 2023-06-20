@@ -22,6 +22,7 @@ extension PlayerExtension on Player {
       colorIdx: game.nextColorIdx,
       blobs: [
         BlobExtension.create(
+          userId: userId,
           position: Offset(
             random.nextDouble() * game.board.width,
             random.nextDouble() * game.board.height,
@@ -96,12 +97,14 @@ extension PlayerExtension on Player {
         );
 
         var newBlobA = BlobExtension.create(
+          userId: blob.userId,
           position: blob.body.position - offset,
           radius: splitRadius,
         );
         newBlobs.add(newBlobA);
 
         var newBlobB = BlobExtension.create(
+          userId: blob.userId,
           position: blob.body.position + offset,
           radius: splitRadius,
         );
@@ -135,6 +138,7 @@ extension PlayerExtension on Player {
     }
 
     var joinedBlob = BlobExtension.create(
+      userId: userId,
       position: joinedBlobPosition,
       radius: sqrt(totalArea / pi),
     );

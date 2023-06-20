@@ -4,12 +4,10 @@ import 'package:bacterialboom_server/src/extensions/food.dart';
 import 'package:bacterialboom_server/src/extensions/npc.dart';
 import 'package:bacterialboom_server/src/extensions/player.dart';
 import 'package:bacterialboom_server/src/generated/protocol.dart';
+import 'package:bacterialboom_server/src/logic/collisions.dart';
 import 'package:serverpod/serverpod.dart';
 
 const numPlayerColorIndices = 8;
-
-const _boardWidth = 1024.0;
-const _boardHeight = 1024.0;
 
 const _maxPlayers = 40;
 const _maxFood = 500;
@@ -17,6 +15,9 @@ const _maxFood = 500;
 const _splitTime = 5.0;
 
 extension GameStateExtension on GameState {
+  static const boardWidth = 1024.0;
+  static const boardHeight = 1024.0;
+
   static const fps = 10;
   static const tickDuration = Duration(milliseconds: 1000 ~/ fps);
   static const deltaTime = 1 / fps;
@@ -34,7 +35,7 @@ extension GameStateExtension on GameState {
     }
 
     var newGame = GameState(
-      board: Board(width: _boardWidth, height: _boardHeight),
+      board: Board(width: boardWidth, height: boardHeight),
       gameId: _gameId++,
       food: [],
       players: [],
@@ -94,32 +95,56 @@ extension GameStateExtension on GameState {
     // Check collisions.
     var removeBlobIds = <int>{};
     var removeFoodIds = <int>{};
+    var playerLookup = <int, Player>{};
+
+    var blobs = <Blob>[];
+    for (var player in players) {
+      blobs.addAll(player.blobs);
+      playerLookup[player.userId] = player;
+    }
+
+    var collisionHandler = CollisionHandler(
+      blobs: blobs,
+      food: food,
+    );
+
     for (var player in players) {
       for (var blob in player.blobs) {
-        // Collisions with other players.
-        for (var otherPlayer in players) {
+        // Check collisions with other blobs.
+        var collidingBlobs = collisionHandler.collidesWithBlob(blob.body);
+        for (var collidingBlob in collidingBlobs) {
           // Skip collisons with self.
-          if (player.userId == otherPlayer.userId) continue;
+          if (collidingBlob.userId == player.userId) {
+            continue;
+          }
+          var otherPlayer = playerLookup[collidingBlob.userId];
+          if (otherPlayer == null) {
+            continue;
+          }
+
+          // Skip already eaten blobs.
+          if (removeBlobIds.contains(collidingBlob.blobId)) {
+            continue;
+          }
 
           // Skip collisions with players that have been alive for less
           // than 5 seconds.
-          if (otherPlayer.getLifeTime(this) < 5) continue;
+          if (otherPlayer.getLifeTime(this) < 5) {
+            continue;
+          }
 
-          // Check other players's blobs.
-          for (var otherBlob in otherPlayer.blobs) {
-            if (blob.body.collidesWith(otherBlob.body)) {
-              if (blob.body.radius > otherBlob.body.radius) {
-                blob.area += otherBlob.area;
-                removeBlobIds.add(otherBlob.blobId);
-                player.score += otherBlob.area / defaultFoodArea;
-              }
-            }
+          // Eat smaller blobs.
+          if (collidingBlob.body.radius < blob.body.radius) {
+            blob.area += collidingBlob.area;
+            removeBlobIds.add(collidingBlob.blobId);
+            player.score += collidingBlob.area / defaultFoodArea;
           }
         }
-        // Collisions with food.
-        for (var f in food) {
-          if (!removeFoodIds.contains(f.foodId) &&
-              blob.body.collidesWith(f.body)) {
+
+        // Check collisions with food.
+        var collidingFood = collisionHandler.collidesWithFood(blob.body);
+        for (var f in collidingFood) {
+          if (!removeFoodIds.contains(f.foodId)) {
             blob.area += f.body.area;
             removeFoodIds.add(f.foodId);
             player.score += f.body.area / defaultFoodArea;

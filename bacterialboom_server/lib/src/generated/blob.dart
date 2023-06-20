@@ -11,6 +11,7 @@ import 'protocol.dart' as _i2;
 
 class Blob extends _i1.SerializableEntity {
   Blob({
+    required this.userId,
     required this.blobId,
     required this.body,
     required this.maxVelocity,
@@ -21,6 +22,8 @@ class Blob extends _i1.SerializableEntity {
     _i1.SerializationManager serializationManager,
   ) {
     return Blob(
+      userId:
+          serializationManager.deserialize<int>(jsonSerialization['userId']),
       blobId:
           serializationManager.deserialize<int>(jsonSerialization['blobId']),
       body:
@@ -29,6 +32,8 @@ class Blob extends _i1.SerializableEntity {
           .deserialize<double>(jsonSerialization['maxVelocity']),
     );
   }
+
+  int userId;
 
   int blobId;
 
@@ -39,6 +44,7 @@ class Blob extends _i1.SerializableEntity {
   @override
   Map<String, dynamic> toJson() {
     return {
+      'userId': userId,
       'blobId': blobId,
       'body': body,
       'maxVelocity': maxVelocity,
@@ -48,6 +54,7 @@ class Blob extends _i1.SerializableEntity {
   @override
   Map<String, dynamic> allToJson() {
     return {
+      'userId': userId,
       'blobId': blobId,
       'body': body,
       'maxVelocity': maxVelocity,

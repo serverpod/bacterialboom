@@ -17,10 +17,12 @@ extension BlobExtension on Blob {
   static int _blobId = 0;
 
   static Blob create({
+    required int userId,
     required Offset position,
     double radius = defaultBlobRadius,
   }) {
     var blob = Blob(
+      userId: userId,
       body: Body(
         x: position.x,
         y: position.y,

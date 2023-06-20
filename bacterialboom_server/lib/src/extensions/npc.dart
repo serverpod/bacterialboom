@@ -20,12 +20,13 @@ extension NpcExtension on Player {
     var random = Random();
     var npc = Player(
       name: 'NPC',
-      userId: _npcId--,
+      userId: _npcId,
       spawnedAt: game.time,
       score: 0,
       colorIdx: game.nextColorIdx,
       blobs: [
         BlobExtension.create(
+          userId: _npcId,
           position: Offset(
             random.nextDouble() * game.board.width,
             random.nextDouble() * game.board.height,
@@ -38,6 +39,7 @@ extension NpcExtension on Player {
     game.players.add(npc);
     game.nextColorIdx = (game.nextColorIdx + 1) % numPlayerColorIndices;
 
+    _npcId -= 1;
     return npc;
   }
 
