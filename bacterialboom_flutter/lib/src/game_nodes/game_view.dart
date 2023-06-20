@@ -2,9 +2,10 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:bacterialboom_flutter/src/game_nodes/game_board.dart';
+import 'package:bacterialboom_flutter/src/util.dart/dampening.dart';
 import 'package:spritewidget/spritewidget.dart';
 
-const _dampening = 0.95;
+const _dampening = 0.05;
 
 class GameViewNode extends NodeWithSize {
   GameViewNode(this.gameBoard) : super(const Size(1024, 1024)) {
@@ -46,14 +47,20 @@ class GameViewNode extends NodeWithSize {
         _targetOffset = targetOffset;
         _targetScale = targetScale;
       }
-      var timeAdjustedDampening =
-          (1 - math.pow(1 - _dampening, dt * 60)).toDouble();
 
-      gameBoard.position = gameBoard.position * timeAdjustedDampening +
-          _targetOffset! * (1 - timeAdjustedDampening);
+      gameBoard.position = dampenOffset(
+        value: gameBoard.position,
+        target: _targetOffset!,
+        dampening: _dampening,
+        dt: dt,
+      );
 
-      gameBoard.scale = gameBoard.scale * timeAdjustedDampening +
-          _targetScale! * (1 - timeAdjustedDampening);
+      gameBoard.scale = dampen(
+        value: gameBoard.scale,
+        target: _targetScale!,
+        dampening: _dampening,
+        dt: dt,
+      );
     }
   }
 
