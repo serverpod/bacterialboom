@@ -133,6 +133,7 @@ class GameBoard extends NodeWithSize {
     // Update or add blobs.
     for (var player in gameState.players) {
       var isCurrentPlayer = player.userId == userId;
+      var numPlayerBlobs = _blobNodesForUserId(userId).length;
 
       for (var blob in player.blobs) {
         if (blobsOnBoard.containsKey(blob.blobId)) {
@@ -153,7 +154,7 @@ class GameBoard extends NodeWithSize {
 
           blobNode.colorIdx = player.colorIdx;
 
-          if (_blobNodesForUserId(userId).length != player.blobs.length) {
+          if (_blobNodesForUserId(userId).length != numPlayerBlobs) {
             // The number of blobs for the player has changed. Update the
             // position immediately.
             blobNode.position = Offset(blob.body.x, blob.body.y);
