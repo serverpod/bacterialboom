@@ -16,7 +16,6 @@ class FoodNode extends GameObjectNode {
     _rotationAnimationVal = random.nextDouble();
 
     _foodSprite = Sprite(texture: resourceManager.foodSprite);
-    _foodSprite.scale = radius * 0.015;
     addChild(_foodSprite);
 
     motions.run(
