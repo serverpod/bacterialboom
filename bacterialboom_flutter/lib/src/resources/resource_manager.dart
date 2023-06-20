@@ -12,9 +12,11 @@ class ResourceManager {
 
   static const _blobParticleFile = 'assets/blob_particle.png';
   static const _sporeParticleFile = 'assets/spore_particle.png';
+  static const _foodSpriteFile = 'assets/food.png';
 
   late final SpriteTexture blobParticle;
   late final SpriteTexture sporeParticle;
+  late final SpriteTexture foodSprite;
 
   late final ui.Image backgroundImage;
   late final ui.Image backgroundOverlayImage;
@@ -23,10 +25,12 @@ class ResourceManager {
     await images.load([
       _blobParticleFile,
       _sporeParticleFile,
+      _foodSpriteFile,
     ]);
 
     blobParticle = SpriteTexture(images[_blobParticleFile]!);
     sporeParticle = SpriteTexture(images[_sporeParticleFile]!);
+    foodSprite = SpriteTexture(images[_foodSpriteFile]!);
 
     backgroundImage = await _generateBackground();
     backgroundOverlayImage = await _generateBackgroundOverlay();
