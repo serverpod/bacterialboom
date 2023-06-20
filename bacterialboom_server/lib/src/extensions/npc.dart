@@ -5,10 +5,10 @@ import 'package:bacterialboom_server/src/extensions/body.dart';
 import 'package:bacterialboom_server/src/extensions/game_state.dart';
 import 'package:bacterialboom_server/src/extensions/player.dart';
 import 'package:bacterialboom_server/src/generated/protocol.dart';
-import 'package:bacterialboom_server/src/util/distance.dart';
+import 'package:bacterialboom_server/src/logic/collisions.dart';
 import 'package:bacterialboom_server/src/util/offset.dart';
 
-const _chaseBlobDistance = 100.0;
+const _npcSearchDistance = 100.0;
 const _splitProbability = 0.1;
 
 extension NpcExtension on Player {
@@ -45,44 +45,38 @@ extension NpcExtension on Player {
 
   bool get isNpc => userId < 0;
 
-  void tickNpc(GameState game) {
+  void tickNpc(GameState game, CollisionHandler collisionHandler) {
     assert(userId < 0, 'Only NPCs can call this method.');
 
-    var closestBlob = _findClosestOpponentBlob(
-      game: game,
+    var closestBlob = collisionHandler.closestBlobWithinDistance(
+      position: center,
+      maxDistance: _npcSearchDistance,
+      excludeUserId: userId,
     );
 
-    bool chaisingBlobs = false;
-
     if (closestBlob != null) {
-      var distance = approximateDistance(center, closestBlob.body.position);
-      if (distance < _chaseBlobDistance) {
-        chaisingBlobs = true;
-
-        if (closestBlob.body.radius > averageBlobRadius) {
-          // Run away from opponent.
-          for (var blob in blobs) {
-            blob.moveTowardsTarget(
-              closestBlob.body.position,
-              game,
-              reverse: true,
-            );
-          }
-        } else {
-          // Chase opponent.
-          for (var blob in blobs) {
-            blob.moveTowardsTarget(
-              closestBlob.body.position,
-              game,
-            );
-          }
+      if (closestBlob.body.radius > averageBlobRadius) {
+        // Run away from opponent.
+        for (var blob in blobs) {
+          blob.moveTowardsTarget(
+            closestBlob.body.position,
+            game,
+            reverse: true,
+          );
+        }
+      } else {
+        // Chase opponent.
+        for (var blob in blobs) {
+          blob.moveTowardsTarget(
+            closestBlob.body.position,
+            game,
+          );
         }
       }
-    }
-
-    if (!chaisingBlobs) {
-      var closestFood = _findClosestFood(
-        game: game,
+    } else {
+      var closestFood = collisionHandler.closestFoodWithinDistance(
+        position: center,
+        maxDistance: _npcSearchDistance,
       );
 
       if (closestFood != null) {
@@ -105,47 +99,5 @@ extension NpcExtension on Player {
     }
 
     avoidOverlappingBlobs();
-  }
-
-  Blob? _findClosestOpponentBlob({
-    required GameState game,
-  }) {
-    Blob? closestBlob;
-    double closestDistance = double.infinity;
-    for (var opponent in game.players) {
-      if (opponent.userId == userId) continue;
-
-      for (var blob in opponent.blobs) {
-        var distance = approximateDistance(
-          blob.body.position,
-          center,
-        );
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestBlob = blob;
-        }
-      }
-    }
-
-    return closestBlob;
-  }
-
-  Food? _findClosestFood({
-    required GameState game,
-  }) {
-    Food? closestFood;
-    double closestDistance = double.infinity;
-    for (var food in game.food) {
-      var distance = approximateDistance(
-        food.body.position,
-        center,
-      );
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestFood = food;
-      }
-    }
-
-    return closestFood;
   }
 }

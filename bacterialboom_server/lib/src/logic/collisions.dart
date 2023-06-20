@@ -1,6 +1,8 @@
 import 'package:bacterialboom_server/src/extensions/body.dart';
 import 'package:bacterialboom_server/src/extensions/game_state.dart';
 import 'package:bacterialboom_server/src/generated/protocol.dart';
+import 'package:bacterialboom_server/src/util/distance.dart';
+import 'package:bacterialboom_server/src/util/offset.dart';
 import 'package:quadtree_dart/quadtree_dart.dart';
 
 class CollisionHandler {
@@ -64,6 +66,71 @@ class CollisionHandler {
       }
     }
     return hits;
+  }
+
+  Blob? closestBlobWithinDistance({
+    required Offset position,
+    required double maxDistance,
+    required int excludeUserId,
+  }) {
+    var potentialBlobs = _blobsQuadTree.retrieve(
+      Rect(
+        x: position.x - maxDistance,
+        y: position.y - maxDistance,
+        width: maxDistance * 2,
+        height: maxDistance * 2,
+      ),
+    );
+
+    Blob? closestBlob;
+    var closestDistance = double.infinity;
+    for (var potentialBlob in potentialBlobs) {
+      if (potentialBlob is BlobRect) {
+        var distance = approximateDistance(
+          position,
+          potentialBlob.blob.body.position,
+        );
+        if (distance < closestDistance &&
+            distance < maxDistance &&
+            potentialBlob.blob.userId != excludeUserId) {
+          closestBlob = potentialBlob.blob;
+          closestDistance = distance;
+        }
+      }
+    }
+
+    return closestBlob;
+  }
+
+  Food? closestFoodWithinDistance({
+    required Offset position,
+    required double maxDistance,
+  }) {
+    var potentialFood = _foodQuadTree.retrieve(
+      Rect(
+        x: position.x - maxDistance,
+        y: position.y - maxDistance,
+        width: maxDistance * 2,
+        height: maxDistance * 2,
+      ),
+    );
+
+    Food? closestFood;
+    var closestDistance = double.infinity;
+    for (var potentialFood in potentialFood) {
+      if (potentialFood is FoodRect) {
+        var distance = approximateDistance(
+          position,
+          potentialFood.food.body.position,
+        );
+        if (distance < closestDistance && distance < maxDistance) {
+          closestFood = potentialFood.food;
+          closestDistance = distance;
+        }
+      }
+    }
+
+    return closestFood;
   }
 }
 

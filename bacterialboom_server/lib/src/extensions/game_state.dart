@@ -85,28 +85,31 @@ extension GameStateExtension on GameState {
   }
 
   void tick() {
+    // Setup collision handler.
+    var playerLookup = <int, Player>{};
+    var blobs = <Blob>[];
+    for (var player in players) {
+      blobs.addAll(player.blobs);
+      playerLookup[player.userId] = player;
+    }
+    var collisionHandler = CollisionHandler(
+      blobs: blobs,
+      food: food,
+    );
+
     // Move non playing characters.
     for (var npc in players) {
       if (npc.isNpc) {
-        npc.tickNpc(this);
+        npc.tickNpc(
+          this,
+          collisionHandler,
+        );
       }
     }
 
     // Check collisions.
     var removeBlobIds = <int>{};
     var removeFoodIds = <int>{};
-    var playerLookup = <int, Player>{};
-
-    var blobs = <Blob>[];
-    for (var player in players) {
-      blobs.addAll(player.blobs);
-      playerLookup[player.userId] = player;
-    }
-
-    var collisionHandler = CollisionHandler(
-      blobs: blobs,
-      food: food,
-    );
 
     for (var player in players) {
       for (var blob in player.blobs) {
