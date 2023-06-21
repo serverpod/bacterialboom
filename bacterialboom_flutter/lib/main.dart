@@ -43,7 +43,8 @@ class BacterialBoomApp extends StatelessWidget {
     return MaterialApp(
       title: 'Bacterial Boom',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
+        useMaterial3: true,
       ),
       home: const MainPage(title: 'Bacterial Boom'),
       // showPerformanceOverlay: true,
