@@ -16,36 +16,76 @@ class ConnectionDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     String connectionStateDescription;
     Color connectionStateColor;
+    Icon connectionStateIcon;
     switch (connectionState.status) {
       case StreamingConnectionStatus.connected:
         connectionStateDescription = 'Connected';
-        connectionStateColor = Colors.green;
+        connectionStateColor = Colors.green.shade900;
+        connectionStateIcon = const Icon(
+          Icons.check,
+          weight: 700,
+          color: Colors.white,
+          size: 16,
+        );
         break;
       case StreamingConnectionStatus.connecting:
         connectionStateDescription = 'Connecting';
-        connectionStateColor = Colors.orange[800]!;
+        connectionStateColor = Colors.orange.shade900;
+        connectionStateIcon = const Icon(
+          Icons.change_circle_outlined,
+          color: Colors.white,
+          size: 16,
+          weight: 500,
+        );
         break;
       case StreamingConnectionStatus.disconnected:
         connectionStateDescription = 'Disconnected';
-        connectionStateColor = Colors.red;
+        connectionStateColor = Colors.red.shade900;
+        connectionStateIcon = const Icon(
+          Icons.cancel_outlined,
+          color: Colors.white,
+          size: 16,
+          weight: 500,
+        );
         break;
       case StreamingConnectionStatus.waitingToRetry:
         connectionStateDescription =
-            'Retrying in ${connectionState.retryInSeconds} seconds';
-        connectionStateColor = Colors.orange[800]!;
+            'Retrying ${connectionState.retryInSeconds}';
+        connectionStateColor = Colors.orange.shade900;
+        connectionStateIcon = const Icon(
+          Icons.change_circle_outlined,
+          color: Colors.white,
+          size: 16,
+          weight: 500,
+        );
         break;
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Stack(
       children: [
-        Expanded(child: child),
-        Container(
-          padding: const EdgeInsets.all(8),
-          color: connectionStateColor,
-          child: Text(
-            connectionStateDescription,
-            style: const TextStyle(color: Colors.white),
+        child,
+        Positioned(
+          left: 16,
+          top: 16,
+          child: Container(
+            width: 140,
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: connectionStateColor.withOpacity(0.5),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+              border: Border.all(color: Colors.black54, width: 2),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                connectionStateIcon,
+                const SizedBox(width: 4),
+                Text(
+                  connectionStateDescription,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
           ),
         ),
       ],

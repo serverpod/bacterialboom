@@ -1,3 +1,4 @@
+import 'package:bacterialboom_server/src/util/transactional_emails.dart';
 import 'package:serverpod/serverpod.dart';
 
 import 'package:bacterialboom_server/src/web/routes/root.dart';
@@ -21,6 +22,11 @@ void run(List<String> args) async {
   auth.AuthConfig.set(auth.AuthConfig(
     sendValidationEmail: (session, email, validationCode) async {
       print('Sending validation email to $email with code $validationCode');
+      return await TransactionalEmails.sendValidationEmail(
+        session,
+        email,
+        validationCode,
+      );
       return true;
     },
     sendPasswordResetEmail: (session, userInfo, validationCode) async {
@@ -28,7 +34,11 @@ void run(List<String> args) async {
         'Sending password reset email to ${userInfo.email} with '
         'code $validationCode',
       );
-      return true;
+      return await TransactionalEmails.sendPasswordResetEmail(
+        session,
+        userInfo,
+        validationCode,
+      );
     },
   ));
 

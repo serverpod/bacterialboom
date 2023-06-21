@@ -22,7 +22,16 @@ class HighScoreList extends StatelessWidget {
             ))
         .toList();
 
-    return SizedBox(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.black.withOpacity(0.7),
+          width: 2,
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       width: 120,
       child: Column(
         children: highScores,

@@ -3,6 +3,7 @@ import 'package:bacterialboom_flutter/src/pages/game_page.dart';
 import 'package:bacterialboom_flutter/src/pages/sign_in_page.dart';
 import 'package:bacterialboom_flutter/src/pages/splash_page.dart';
 import 'package:bacterialboom_flutter/src/resources/resource_manager.dart';
+import 'package:bacterialboom_flutter/src/widgets/email_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
@@ -19,6 +20,9 @@ void main() async {
   // Load resources
   resourceManager = ResourceManager();
   await resourceManager.load();
+
+  // Load settings.
+  await loadHasAskedToJoinMailingList();
 
   // Setup Serverpod client and session manager.
   client = Client(
@@ -43,7 +47,7 @@ class BacterialBoomApp extends StatelessWidget {
     return MaterialApp(
       title: 'Bacterial Boom',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        colorSchemeSeed: Colors.blue,
         useMaterial3: true,
       ),
       home: const MainPage(title: 'Bacterial Boom'),

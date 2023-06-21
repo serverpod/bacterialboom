@@ -1,4 +1,5 @@
 import 'package:bacterialboom_flutter/main.dart';
+import 'package:bacterialboom_flutter/src/widgets/email_signup.dart';
 import 'package:bacterialboom_flutter/src/widgets/scrolling_background.dart';
 import 'package:flutter/material.dart';
 import 'package:spritewidget/spritewidget.dart';
@@ -24,6 +25,16 @@ class _SplashPageState extends State<SplashPage> {
   final SplashLogoNode _logoNode = SplashLogoNode();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!hasAskedToJoinMailingList()) {
+        showJoinMailingListDialog(context);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -43,17 +54,28 @@ class _SplashPageState extends State<SplashPage> {
           left: 16,
           child: _buildTopMenu(),
         ),
-        const Positioned(
+        Positioned(
+          bottom: 14,
+          right: 16,
+          left: 16,
+          child: Center(
+            child: Image.asset(
+              'assets/serverpod.png',
+              width: 150,
+              color: Colors.black,
+              opacity: const AlwaysStoppedAnimation(0.5),
+            ),
+          ),
+        ),
+        Positioned(
           bottom: 16,
           right: 16,
           left: 16,
-          child: Text(
-            'Made with Serverpod',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
+          child: Center(
+            child: Image.asset(
+              'assets/serverpod.png',
+              width: 150,
             ),
-            textAlign: TextAlign.center,
           ),
         ),
       ],
@@ -127,18 +149,22 @@ class _SplashPageState extends State<SplashPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        _buildTopMenuButton(
+          text: 'Logout',
+          onPressed: () {
+            sessionManager.signOut();
+          },
+        ),
         const Spacer(),
         _buildTopMenuButton(
-          text: 'About',
+          text: 'Mailing List',
           onPressed: () {
-            print('About');
-            launchUrl(Uri.parse('https://serverpod.dev'));
+            showJoinMailingListDialog(context);
           },
         ),
         _buildTopMenuButton(
           text: 'View Code',
           onPressed: () {
-            print('View Code');
             launchUrl(Uri.parse('https://github.com/serverpod/bacterialboom'));
           },
         ),
@@ -157,6 +183,13 @@ class _SplashPageState extends State<SplashPage> {
         style: const TextStyle(
           fontSize: 18,
           color: Colors.white,
+          shadows: [
+            BoxShadow(
+              color: Colors.black,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
       ),
     );

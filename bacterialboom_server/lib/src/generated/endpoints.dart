@@ -8,7 +8,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoints/game_board_endpoint.dart' as _i2;
-import 'package:serverpod_auth_server/module.dart' as _i3;
+import '../endpoints/mailing_list.dart' as _i3;
+import 'package:serverpod_auth_server/module.dart' as _i4;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -19,13 +20,35 @@ class Endpoints extends _i1.EndpointDispatch {
           server,
           'gameBoard',
           null,
-        )
+        ),
+      'mailingList': _i3.MailingListEndpoint()
+        ..initialize(
+          server,
+          'mailingList',
+          null,
+        ),
     };
     connectors['gameBoard'] = _i1.EndpointConnector(
       name: 'gameBoard',
       endpoint: endpoints['gameBoard']!,
       methodConnectors: {},
     );
-    modules['serverpod_auth'] = _i3.Endpoints()..initializeEndpoints(server);
+    connectors['mailingList'] = _i1.EndpointConnector(
+      name: 'mailingList',
+      endpoint: endpoints['mailingList']!,
+      methodConnectors: {
+        'join': _i1.MethodConnector(
+          name: 'join',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['mailingList'] as _i3.MailingListEndpoint)
+                  .join(session),
+        )
+      },
+    );
+    modules['serverpod_auth'] = _i4.Endpoints()..initializeEndpoints(server);
   }
 }
