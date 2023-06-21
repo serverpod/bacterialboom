@@ -1,5 +1,6 @@
 import 'package:bacterialboom_client/bacterialboom_client.dart';
 import 'package:bacterialboom_flutter/main.dart';
+import 'package:bacterialboom_flutter/src/extensions/game_state.dart';
 import 'package:bacterialboom_flutter/src/pages/splash_page.dart';
 import 'package:bacterialboom_flutter/src/widgets/game_board.dart';
 import 'package:bacterialboom_flutter/src/widgets/connection_display.dart';
@@ -54,8 +55,15 @@ class _GamePageState extends State<GamePage> {
     try {
       await for (var update in client.gameBoard.stream) {
         if (update is GameState) {
+          // Got a full game state update.
           setState(() {
             _gameState = update;
+          });
+        } else if (update is GameStateUpdate && _gameState != null) {
+          // Got an incremental game update. Apply it to the current game
+          // state.
+          setState(() {
+            _gameState!.update(update);
           });
         }
       }

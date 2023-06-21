@@ -8,7 +8,7 @@ import 'package:serverpod_auth_server/module.dart';
 
 class GameBoardEndpoint extends Endpoint {
   GameBoardEndpoint() {
-    // Tick the game state every 100ms.
+    // Tick the game state every time step.
     Timer.periodic(GameStateExtension.tickDuration, (timer) {
       GameStateExtension.tickAll();
     });
@@ -66,11 +66,6 @@ class GameBoardEndpoint extends Endpoint {
     if (message is CmdPositionUpdate) {
       var userObject = getUserObject(session) as _UserObject;
       var player = userObject.player;
-
-      if (player.blobs.length != message.blobs.length) {
-        print(' - Invalid number of blobs');
-        return;
-      }
 
       // TODO: Validate position update.
 

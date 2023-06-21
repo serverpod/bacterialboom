@@ -45,7 +45,7 @@ extension GameStateExtension on GameState {
     );
 
     newGame._spawnNpcs();
-    newGame._spawnFood();
+    newGame._spawnFood(returnAddedFood: []);
 
     _runningGames.add(newGame);
     return newGame;
@@ -72,19 +72,40 @@ extension GameStateExtension on GameState {
 
   static Future<void> tickAll() async {
     for (var game in _runningGames) {
-      game.tick();
+      // Tick the game state of a game.
+      var addedFood = <Food>[];
+      var removedFoodIds = <int>[];
+
+      game.tick(
+        returnAddedFood: addedFood,
+        returnRemovedFoodIds: removedFoodIds,
+      );
+
+      // Generate an incremental update.
+      var update = GameStateUpdate(
+        gameId: game.gameId,
+        time: game.time,
+        players: game.players,
+        addedFood: addedFood,
+        removedFoodIds: removedFoodIds,
+      );
+
+      // Post the message to all players.
       var session = await Serverpod.instance!.createSession();
 
       session.messages.postMessage(
         game.channel,
-        game,
+        update,
       );
 
       await session.close();
     }
   }
 
-  void tick() {
+  void tick({
+    required List<Food> returnAddedFood,
+    required List<int> returnRemovedFoodIds,
+  }) {
     // Setup collision handler.
     var playerLookup = <int, Player>{};
     var blobs = <Blob>[];
@@ -158,6 +179,9 @@ extension GameStateExtension on GameState {
 
     // Remove eaten food.
     food.removeWhere((e) => removeFoodIds.contains(e.foodId));
+    for (var f in removeFoodIds) {
+      returnRemovedFoodIds.add(f);
+    }
 
     // Remove eaten blobs.
     var removePlayerIds = <int>{};
@@ -173,7 +197,7 @@ extension GameStateExtension on GameState {
     players.removeWhere((e) => removePlayerIds.contains(e.userId));
 
     // Spawn new food.
-    _spawnFood();
+    _spawnFood(returnAddedFood: returnAddedFood);
 
     // Spawn new npcs.
     _spawnNpcs();
@@ -194,10 +218,13 @@ extension GameStateExtension on GameState {
     time += deltaTime;
   }
 
-  void _spawnFood() {
+  void _spawnFood({
+    required List<Food> returnAddedFood,
+  }) {
     var numNewFood = _maxFood - food.length;
     for (var i = 0; i < numNewFood; i++) {
-      FoodExtension.create(this);
+      var f = FoodExtension.create(this);
+      returnAddedFood.add(f);
     }
   }
 

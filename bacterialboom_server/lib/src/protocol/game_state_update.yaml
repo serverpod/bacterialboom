@@ -1,0 +1,7 @@
+class: GameStateUpdate
+fields:
+  gameId: int
+  time: double
+  players: List<Player>
+  addedFood: List<Food>
+  removedFoodIds: List<int>
