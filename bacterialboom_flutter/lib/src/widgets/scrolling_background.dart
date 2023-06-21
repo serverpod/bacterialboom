@@ -15,9 +15,25 @@ class ScrollingBackgroundState extends State<ScrollingBackground> {
 
   @override
   Widget build(BuildContext context) {
-    return SpriteWidget(
-      _splashBackgroundNode,
-      transformMode: SpriteBoxTransformMode.letterbox,
+    return Stack(
+      children: [
+        SpriteWidget(
+          _splashBackgroundNode,
+          transformMode: SpriteBoxTransformMode.letterbox,
+        ),
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.center,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.transparent,
+                Colors.black87,
+              ],
+            ),
+          ),
+        )
+      ],
     );
   }
 }
