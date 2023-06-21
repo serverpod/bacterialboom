@@ -1,9 +1,11 @@
 import 'package:bacterialboom_client/bacterialboom_client.dart';
 import 'package:bacterialboom_flutter/main.dart';
+import 'package:bacterialboom_flutter/src/pages/splash_page.dart';
 import 'package:bacterialboom_flutter/src/widgets/game_board.dart';
 import 'package:bacterialboom_flutter/src/widgets/connection_display.dart';
 import 'package:bacterialboom_flutter/src/widgets/game_controls.dart';
 import 'package:bacterialboom_flutter/src/widgets/highscore_list.dart';
+import 'package:bacterialboom_flutter/src/widgets/scrolling_background.dart';
 import 'package:flutter/material.dart';
 
 class GamePage extends StatefulWidget {
@@ -74,10 +76,24 @@ class _GamePageState extends State<GamePage> {
     return ConnectionDisplay(
       connectionState: _connectionHandler.status,
       child: _gameState == null
-          ? Container(
-              color: Colors.black,
-              alignment: Alignment.center,
-              child: const CircularProgressIndicator(),
+          ? Stack(
+              fit: StackFit.expand,
+              children: [
+                ScrollingBackground(
+                  key: scrollingBackgroundKey,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: const SizedBox(
+                    width: 128,
+                    height: 128,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 8,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             )
           : Stack(
               children: [

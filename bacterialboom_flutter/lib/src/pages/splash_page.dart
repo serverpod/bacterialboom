@@ -1,7 +1,10 @@
 import 'package:bacterialboom_flutter/main.dart';
-import 'package:bacterialboom_flutter/src/game_nodes/tiled_sprite.dart';
+import 'package:bacterialboom_flutter/src/widgets/scrolling_background.dart';
 import 'package:flutter/material.dart';
 import 'package:spritewidget/spritewidget.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+final scrollingBackgroundKey = GlobalKey();
 
 class SplashPage extends StatefulWidget {
   const SplashPage({
@@ -18,124 +21,145 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  final SplashBackgroundNode _splashNode = SplashBackgroundNode();
   final SplashLogoNode _logoNode = SplashLogoNode();
 
   @override
   Widget build(BuildContext context) {
     return Stack(
-      fit: StackFit.expand,
       children: [
-        SpriteWidget(
-          _splashNode,
-          transformMode: SpriteBoxTransformMode.letterbox,
+        ScrollingBackground(
+          key: scrollingBackgroundKey,
         ),
-        Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AspectRatio(
-                aspectRatio: 3,
-                child: SpriteWidget(
-                  _logoNode,
-                ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: widget.onPressedPlay,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 32,
-                  ),
-                  elevation: 32,
-                  shadowColor: Colors.black,
-                  backgroundColor: Colors.green.shade600,
-                  surfaceTintColor: Colors.transparent,
-                  foregroundColor: Colors.yellow.shade200,
-                  side: const BorderSide(
-                    color: Colors.black,
-                    width: 4,
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                    shadows: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      )
-                    ],
-                  ),
-                ),
-                child: const Text('PLAY'),
-              ),
-            ],
+        LayoutBuilder(builder: (context, constraints) {
+          if (constraints.maxWidth < constraints.maxHeight) {
+            return _buildPortrait();
+          } else {
+            return _buildLandscape();
+          }
+        }),
+        Positioned(
+          top: 16,
+          right: 16,
+          left: 16,
+          child: _buildTopMenu(),
+        ),
+        const Positioned(
+          bottom: 16,
+          right: 16,
+          left: 16,
+          child: Text(
+            'Made with Serverpod',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+            ),
+            textAlign: TextAlign.center,
           ),
         ),
       ],
     );
   }
-}
 
-class SplashBackgroundNode extends NodeWithSize {
-  SplashBackgroundNode() : super(const Size(1024, 1024)) {
-    // Parallax background.
-    var background = TiledSprite(
-      image: resourceManager.backgroundImage,
-      size: size,
+  Widget _buildPortrait() {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildLogo(),
+        const SizedBox(height: 32),
+        _buildPlayButton(),
+      ],
     );
-    background.imageScale = 5.0;
-    addChild(background);
-    _backgroundLayers.add(background);
-    _backgroundLayersSpeeds.add(20.0);
-
-    var overlay0 = TiledSprite(
-      image: resourceManager.backgroundOverlayImage,
-      blendMode: BlendMode.plus,
-      size: size,
-    );
-    overlay0.imageScale = 1.0;
-    addChild(overlay0);
-    _backgroundLayers.add(overlay0);
-    _backgroundLayersSpeeds.add(50.0);
-
-    var overlay1 = TiledSprite(
-      image: resourceManager.backgroundOverlayImage,
-      blendMode: BlendMode.plus,
-      size: size,
-    );
-    overlay1.imageScale = 1.5;
-    addChild(overlay1);
-    _backgroundLayers.add(overlay1);
-    _backgroundLayersSpeeds.add(75.0);
-
-    var overlay2 = TiledSprite(
-      image: resourceManager.backgroundOverlayImage,
-      blendMode: BlendMode.plus,
-      size: size,
-    );
-    overlay2.imageScale = 2.0;
-    addChild(overlay2);
-    _backgroundLayers.add(overlay2);
-    _backgroundLayersSpeeds.add(100.0);
   }
 
-  double _yOffset = 0.0;
+  Widget _buildLandscape() {
+    return Stack(
+      children: [
+        Center(child: _buildLogo()),
+        Center(child: _buildPlayButton()),
+      ],
+    );
+  }
 
-  final _backgroundLayers = <TiledSprite>[];
-  final _backgroundLayersSpeeds = <double>[];
+  Widget _buildLogo() {
+    return AspectRatio(
+      aspectRatio: 2,
+      child: SpriteWidget(
+        _logoNode,
+      ),
+    );
+  }
 
-  @override
-  void update(double dt) {
-    _yOffset -= dt * 0.25;
+  Widget _buildPlayButton() {
+    return ElevatedButton(
+      onPressed: widget.onPressedPlay,
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 32,
+          vertical: 32,
+        ),
+        elevation: 32,
+        shadowColor: Colors.black,
+        backgroundColor: Colors.green.shade600,
+        surfaceTintColor: Colors.transparent,
+        foregroundColor: Colors.yellow.shade200,
+        side: const BorderSide(
+          color: Colors.black,
+          width: 4,
+        ),
+        textStyle: const TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.w900,
+          shadows: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            )
+          ],
+        ),
+      ),
+      child: const Text('PLAY'),
+    );
+  }
 
-    for (var i = 0; i < _backgroundLayers.length; i++) {
-      var layer = _backgroundLayers[i];
-      var speed = _backgroundLayersSpeeds[i];
-      layer.offset = Offset(0.0, _yOffset * speed);
-    }
+  Widget _buildTopMenu() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Spacer(),
+        _buildTopMenuButton(
+          text: 'About',
+          onPressed: () {
+            print('About');
+            launchUrl(Uri.parse('https://serverpod.dev'));
+          },
+        ),
+        _buildTopMenuButton(
+          text: 'View Code',
+          onPressed: () {
+            print('View Code');
+            launchUrl(Uri.parse('https://github.com/serverpod/bacterialboom'));
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTopMenuButton({
+    required String text,
+    required VoidCallback onPressed,
+  }) {
+    return MaterialButton(
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 18,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 }
 
@@ -143,7 +167,7 @@ class SplashLogoNode extends NodeWithSize {
   SplashLogoNode() : super(const Size(1024, 512)) {
     // Animated logo.
     var logo = Sprite(texture: resourceManager.logoSprite);
-    logo.position = Offset(size.width / 2, size.height / 3);
+    logo.position = Offset(size.width / 2, size.height / 2);
     logo.scale = 0.52;
     addChild(logo);
 
