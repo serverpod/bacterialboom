@@ -74,8 +74,10 @@ class _GamePageState extends State<GamePage> {
     return ConnectionDisplay(
       connectionState: _connectionHandler.status,
       child: _gameState == null
-          ? const Center(
-              child: CircularProgressIndicator(),
+          ? Container(
+              color: Colors.black,
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator(),
             )
           : Stack(
               children: [

@@ -35,11 +35,12 @@ class _SplashPageState extends State<SplashPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AspectRatio(
-                aspectRatio: 2.0,
+                aspectRatio: 3,
                 child: SpriteWidget(
                   _logoNode,
                 ),
               ),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: widget.onPressedPlay,
                 style: ElevatedButton.styleFrom(
