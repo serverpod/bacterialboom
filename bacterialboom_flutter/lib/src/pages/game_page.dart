@@ -103,31 +103,34 @@ class _GamePageState extends State<GamePage> {
                 ),
               ],
             )
-          : Stack(
-              children: [
-                Container(
-                  color: Colors.grey[800],
-                ),
-                GameBoardWidget(
-                  gameState: _gameState!,
-                  inputController: _gameInputController,
-                  onDone: () {
-                    widget.onDone();
-                    _connectionHandler.close();
-                  },
-                ),
-                GameControlsWidget(
-                  controller: _gameInputController,
-                ),
-                Positioned(
-                  top: 16,
-                  right: 16,
-                  child: HighScoreList(
-                    gameState: _gameState!,
+          : LayoutBuilder(builder: (context, constraints) {
+              return Stack(
+                children: [
+                  Container(
+                    color: Colors.grey[800],
                   ),
-                )
-              ],
-            ),
+                  GameBoardWidget(
+                    gameState: _gameState!,
+                    inputController: _gameInputController,
+                    onDone: () {
+                      widget.onDone();
+                      _connectionHandler.close();
+                    },
+                  ),
+                  GameControlsWidget(
+                    controller: _gameInputController,
+                  ),
+                  Positioned(
+                    top: 16,
+                    right: 16,
+                    child: HighScoreList(
+                      gameState: _gameState!,
+                      compact: constraints.maxWidth < 400,
+                    ),
+                  )
+                ],
+              );
+            }),
     );
   }
 }
