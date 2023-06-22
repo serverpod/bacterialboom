@@ -1,6 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' as ui;
-
 import 'package:bacterialboom_flutter/src/game_nodes/game_board.dart';
 import 'package:bacterialboom_flutter/src/util.dart/dampening.dart';
 import 'package:flutter/material.dart';
