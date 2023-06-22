@@ -88,12 +88,12 @@ jobs:
       # Uncomment the following code to automatically restart the servers in the
       # instance group when you push a new version of your code. Before doing
       # this, make sure that you have successfully deployed a first version.
-      #
-      # - name: Restart servers in instance group
-      #   run: |
-      #     gcloud compute instance-groups managed rolling-action replace serverpod-${{ env.TARGET }}-group \
-      #      --project=${{ env.PROJECT }} \
-      #      --replacement-method='substitute' \
-      #      --max-surge=1 \
-      #      --max-unavailable=1 \
-      #      --zone=${{ env.ZONE }}
+      
+      - name: Restart servers in instance group
+        run: |
+          gcloud compute instance-groups managed rolling-action replace serverpod-${{ env.TARGET }}-group \
+           --project=${{ env.PROJECT }} \
+           --replacement-method='substitute' \
+           --max-surge=1 \
+           --max-unavailable=1 \
+           --zone=${{ env.ZONE }}
