@@ -67,9 +67,11 @@ class GameBoardEndpoint extends Endpoint {
       var userObject = getUserObject(session) as _UserObject;
       var player = userObject.player;
 
-      // TODO: Validate position update.
-
-      player.blobs = message.blobs;
+      // Validate position update.
+      if (player.blobs.length == message.blobs.length) {
+        // The number of blobs (splits) can only be updated by the server.
+        player.blobs = message.blobs;
+      }
     } else if (message is CmdSplit) {
       print('CMD Split');
       var userObject = getUserObject(session) as _UserObject;
