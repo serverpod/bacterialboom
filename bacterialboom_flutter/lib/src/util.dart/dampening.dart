@@ -6,30 +6,30 @@ const _baseTimeStep = 1 / 60;
 double dampen({
   required double value,
   required double target,
-  required double dampening,
+  required double dampeningRatio,
   double dt = _baseTimeStep,
 }) {
-  var timeAdjustedDampening = math.pow(dampening, dt / _baseTimeStep);
-  return (value * (1 - timeAdjustedDampening)) + target * timeAdjustedDampening;
+  var factor = 1 - math.exp(-dampeningRatio * dt);
+  return (value * (1 - factor)) + target * factor;
 }
 
 Offset dampenOffset({
   required Offset value,
   required Offset target,
-  required double dampening,
+  required double dampeningRatio,
   double dt = _baseTimeStep,
 }) {
   return Offset(
     dampen(
       value: value.dx,
       target: target.dx,
-      dampening: dampening,
+      dampeningRatio: dampeningRatio,
       dt: dt,
     ),
     dampen(
       value: value.dy,
       target: target.dy,
-      dampening: dampening,
+      dampeningRatio: dampeningRatio,
       dt: dt,
     ),
   );

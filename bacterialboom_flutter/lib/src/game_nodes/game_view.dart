@@ -1,23 +1,37 @@
 import 'dart:math' as math;
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:bacterialboom_flutter/src/game_nodes/game_board.dart';
 import 'package:bacterialboom_flutter/src/util.dart/dampening.dart';
+import 'package:flutter/material.dart';
 import 'package:spritewidget/spritewidget.dart';
 
-const _dampening = 0.05;
+const _dampening = 3.0;
 
 class GameViewNode extends NodeWithSize {
   GameViewNode(this.gameBoard) : super(const Size(1024, 1024)) {
     addChild(gameBoard);
+
+    fpsDisplay = Label('');
+    fpsDisplay.textStyle = const TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+    );
+    fpsDisplay.position = const Offset(10, 10);
+    fpsDisplay.zPosition = 100;
+    addChild(fpsDisplay);
   }
 
   final GameBoard gameBoard;
   Offset? _targetOffset;
   double? _targetScale;
 
+  late final Label fpsDisplay;
+
   @override
   void update(double dt) {
+    fpsDisplay.text = dt == 0 ? '-- FPS' : '${(1 / dt).round()} FPS (dt: $dt)';
+
     var playerBounds = gameBoard.playerBounds;
     var focus = playerBounds.center;
 
@@ -51,14 +65,14 @@ class GameViewNode extends NodeWithSize {
       gameBoard.position = dampenOffset(
         value: gameBoard.position,
         target: _targetOffset!,
-        dampening: _dampening,
+        dampeningRatio: _dampening,
         dt: dt,
       );
 
       gameBoard.scale = dampen(
         value: gameBoard.scale,
         target: _targetScale!,
-        dampening: _dampening,
+        dampeningRatio: _dampening,
         dt: dt,
       );
     }
