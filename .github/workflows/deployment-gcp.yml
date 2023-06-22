@@ -32,6 +32,17 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v2
+        with:
+          channel: stable
+          version: 3.10.5
+
+      - name: Compile Flutter web app
+        shell: bash
+        run: |
+          scripts/build_web
+
       - name: Setting Target Mode from Input
         if: ${{ github.event.inputs.target != '' }}
         run: echo "TARGET=${{ github.event.inputs.target }}" >> $GITHUB_ENV
