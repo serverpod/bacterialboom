@@ -6,6 +6,10 @@ import 'package:serverpod/serverpod.dart';
 class RouteRoot extends WidgetRoute {
   @override
   Future<Widget> build(Session session, HttpRequest request) async {
+    request.response.headers.add(
+      'Cache-Control',
+      'no-cache, no-store, must-revalidate',
+    );
     return DefaultPageWidget();
   }
 }
