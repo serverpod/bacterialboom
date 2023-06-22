@@ -36,6 +36,9 @@ module "serverpod_production" {
   dns_managed_zone = var.dns_managed_zone
   top_domain       = var.top_domain
 
+  use_top_domain_for_web = true
+  subdomain_web          = "www"
+
   # Size of the auto scaling group.
   autoscaling_min_size = 1
   autoscaling_max_size = 2
