@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Makes sure we break the script on any error.
+set -e
+
+# Build the web app.
+cd bacterialboom_flutter
+flutter build web --release --web-renderer canvaskit
+cd ..
+
+# Copy the build files into the web/app diretory.
+rm -rf bacterialboom_server/web/app
+cp -r bacterialboom_flutter/build/web bacterialboom_server/web/app
+
+# Move the index.html file into the templates directory.
+mkdir -p bacterialboom_server/web/templates
+mv bacterialboom_server/web/app/index.html bacterialboom_server/web/templates/index.html

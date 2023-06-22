@@ -26,7 +26,8 @@ void main() async {
 
   // Setup Serverpod client and session manager.
   client = Client(
-    'http://localhost:8080/',
+    // 'http://localhost:8080/',
+    'https://api.bacterialboom.com/',
     authenticationKeyManager: FlutterAuthenticationKeyManager(),
   )..connectivityMonitor = FlutterConnectivityMonitor();
 
