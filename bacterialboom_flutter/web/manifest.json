@@ -1,11 +1,11 @@
 {
-    "name": "bacterialboom_flutter",
-    "short_name": "bacterialboom_flutter",
+    "name": "Bacterial Boom",
+    "short_name": "BacterialBoom",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A multiplayer game demo for Serverpod.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

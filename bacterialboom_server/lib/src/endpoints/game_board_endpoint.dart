@@ -60,9 +60,7 @@ class GameBoardEndpoint extends Endpoint {
 
   @override
   Future<void> handleStreamMessage(
-    StreamingSession session,
-    SerializableEntity message,
-  ) async {
+      StreamingSession session, SerializableEntity message) async {
     if (message is CmdPositionUpdate) {
       var userObject = getUserObject(session) as _UserObject;
       var player = userObject.player;

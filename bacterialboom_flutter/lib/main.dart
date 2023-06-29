@@ -52,6 +52,7 @@ class BacterialBoomApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const MainPage(title: 'Bacterial Boom'),
+      debugShowCheckedModeBanner: false,
       // showPerformanceOverlay: true,
     );
   }
