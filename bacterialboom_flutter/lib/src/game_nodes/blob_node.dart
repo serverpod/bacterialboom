@@ -37,6 +37,7 @@ class BlobNode extends GameObjectNode {
     required this.maxVelocity,
     required this.radius,
     required this.colorIdx,
+    this.isDummy = false,
   }) {
     _borderPaintSmooth = Paint()
       ..color = Colors.black12
@@ -89,6 +90,7 @@ class BlobNode extends GameObjectNode {
     addChild(particles);
   }
 
+  final bool isDummy;
   final int userId;
   final int blobId;
   double maxVelocity;
@@ -131,7 +133,7 @@ class BlobNode extends GameObjectNode {
     var maxRadius = radius * 1.3 + spikeLength + 1;
 
     // Don't draw if not in view.
-    if (!isInViewFrame(maxRadius)) {
+    if (!isDummy && !isInViewFrame(maxRadius)) {
       return;
     }
 

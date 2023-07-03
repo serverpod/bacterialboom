@@ -11,14 +11,13 @@ import 'package:serverpod_flutter/serverpod_flutter.dart';
 late SessionManager sessionManager;
 late Client client;
 
-late ResourceManager resourceManager;
+final resourceManager = ResourceManager();
 
 void main() async {
   // Make sure Flutter is initialized.
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load resources
-  resourceManager = ResourceManager();
   await resourceManager.load();
 
   // Load settings.
