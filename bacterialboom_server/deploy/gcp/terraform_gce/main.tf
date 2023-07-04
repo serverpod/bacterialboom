@@ -41,7 +41,8 @@ module "serverpod_production" {
 
   # Size of the auto scaling group.
   autoscaling_min_size = 1
-  autoscaling_max_size = 2
+  autoscaling_max_size = 10
+  machine_type = "n1-highcpu-2"
 
   # Password for the production database.
   database_password = var.DATABASE_PASSWORD_PRODUCTION
